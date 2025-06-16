@@ -1,0 +1,4 @@
+/home/tomas-ueda/Área de trabalho/8-bol-pul/build/CMakeFiles/main.dir
+/home/tomas-ueda/Área de trabalho/8-bol-pul/build/CMakeFiles/run.dir
+/home/tomas-ueda/Área de trabalho/8-bol-pul/build/CMakeFiles/edit_cache.dir
+/home/tomas-ueda/Área de trabalho/8-bol-pul/build/CMakeFiles/rebuild_cache.dir

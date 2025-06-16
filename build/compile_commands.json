@@ -1,0 +1,68 @@
+[
+{
+  "directory": "/home/tomas-ueda/Área de trabalho/8-bol-pul/build",
+  "command": "/usr/bin/g++  -I\"/home/tomas-ueda/Área de trabalho/8-bol-pul/include\" -g -std=c++11 -Wall -Wno-unused-function -o CMakeFiles/main.dir/src/main.cpp.o -c \"/home/tomas-ueda/Área de trabalho/8-bol-pul/src/main.cpp\"",
+  "file": "/home/tomas-ueda/Área de trabalho/8-bol-pul/src/main.cpp",
+  "output": "CMakeFiles/main.dir/src/main.cpp.o"
+},
+{
+  "directory": "/home/tomas-ueda/Área de trabalho/8-bol-pul/build",
+  "command": "/usr/bin/g++  -I\"/home/tomas-ueda/Área de trabalho/8-bol-pul/include\" -g -std=c++11 -Wall -Wno-unused-function -o CMakeFiles/main.dir/src/textrendering.cpp.o -c \"/home/tomas-ueda/Área de trabalho/8-bol-pul/src/textrendering.cpp\"",
+  "file": "/home/tomas-ueda/Área de trabalho/8-bol-pul/src/textrendering.cpp",
+  "output": "CMakeFiles/main.dir/src/textrendering.cpp.o"
+},
+{
+  "directory": "/home/tomas-ueda/Área de trabalho/8-bol-pul/build",
+  "command": "/usr/bin/g++  -I\"/home/tomas-ueda/Área de trabalho/8-bol-pul/include\" -g -std=c++11 -Wall -Wno-unused-function -o CMakeFiles/main.dir/src/tiny_obj_loader.cpp.o -c \"/home/tomas-ueda/Área de trabalho/8-bol-pul/src/tiny_obj_loader.cpp\"",
+  "file": "/home/tomas-ueda/Área de trabalho/8-bol-pul/src/tiny_obj_loader.cpp",
+  "output": "CMakeFiles/main.dir/src/tiny_obj_loader.cpp.o"
+},
+{
+  "directory": "/home/tomas-ueda/Área de trabalho/8-bol-pul/build",
+  "command": "/usr/bin/g++  -I\"/home/tomas-ueda/Área de trabalho/8-bol-pul/include\" -g -std=c++11 -Wall -Wno-unused-function -o CMakeFiles/main.dir/src/stb_image.cpp.o -c \"/home/tomas-ueda/Área de trabalho/8-bol-pul/src/stb_image.cpp\"",
+  "file": "/home/tomas-ueda/Área de trabalho/8-bol-pul/src/stb_image.cpp",
+  "output": "CMakeFiles/main.dir/src/stb_image.cpp.o"
+},
+{
+  "directory": "/home/tomas-ueda/Área de trabalho/8-bol-pul/build",
+  "command": "/usr/bin/gcc  -I\"/home/tomas-ueda/Área de trabalho/8-bol-pul/include\" -g -Wall -Wno-unused-function -o CMakeFiles/main.dir/src/glad.c.o -c \"/home/tomas-ueda/Área de trabalho/8-bol-pul/src/glad.c\"",
+  "file": "/home/tomas-ueda/Área de trabalho/8-bol-pul/src/glad.c",
+  "output": "CMakeFiles/main.dir/src/glad.c.o"
+},
+{
+  "directory": "/home/tomas-ueda/Área de trabalho/8-bol-pul/build",
+  "command": "/usr/bin/g++  -I\"/home/tomas-ueda/Área de trabalho/8-bol-pul/include\" -g -std=c++11 -Wall -Wno-unused-function -o CMakeFiles/main.dir/src/callback.cpp.o -c \"/home/tomas-ueda/Área de trabalho/8-bol-pul/src/callback.cpp\"",
+  "file": "/home/tomas-ueda/Área de trabalho/8-bol-pul/src/callback.cpp",
+  "output": "CMakeFiles/main.dir/src/callback.cpp.o"
+},
+{
+  "directory": "/home/tomas-ueda/Área de trabalho/8-bol-pul/build",
+  "command": "/usr/bin/g++  -I\"/home/tomas-ueda/Área de trabalho/8-bol-pul/include\" -g -std=c++11 -Wall -Wno-unused-function -o CMakeFiles/main.dir/src/camera.cpp.o -c \"/home/tomas-ueda/Área de trabalho/8-bol-pul/src/camera.cpp\"",
+  "file": "/home/tomas-ueda/Área de trabalho/8-bol-pul/src/camera.cpp",
+  "output": "CMakeFiles/main.dir/src/camera.cpp.o"
+},
+{
+  "directory": "/home/tomas-ueda/Área de trabalho/8-bol-pul/build",
+  "command": "/usr/bin/g++  -I\"/home/tomas-ueda/Área de trabalho/8-bol-pul/include\" -g -std=c++11 -Wall -Wno-unused-function -o CMakeFiles/main.dir/src/shaders.cpp.o -c \"/home/tomas-ueda/Área de trabalho/8-bol-pul/src/shaders.cpp\"",
+  "file": "/home/tomas-ueda/Área de trabalho/8-bol-pul/src/shaders.cpp",
+  "output": "CMakeFiles/main.dir/src/shaders.cpp.o"
+},
+{
+  "directory": "/home/tomas-ueda/Área de trabalho/8-bol-pul/build",
+  "command": "/usr/bin/g++  -I\"/home/tomas-ueda/Área de trabalho/8-bol-pul/include\" -g -std=c++11 -Wall -Wno-unused-function -o CMakeFiles/main.dir/src/scene.cpp.o -c \"/home/tomas-ueda/Área de trabalho/8-bol-pul/src/scene.cpp\"",
+  "file": "/home/tomas-ueda/Área de trabalho/8-bol-pul/src/scene.cpp",
+  "output": "CMakeFiles/main.dir/src/scene.cpp.o"
+},
+{
+  "directory": "/home/tomas-ueda/Área de trabalho/8-bol-pul/build",
+  "command": "/usr/bin/g++  -I\"/home/tomas-ueda/Área de trabalho/8-bol-pul/include\" -g -std=c++11 -Wall -Wno-unused-function -o CMakeFiles/main.dir/src/load_objects.cpp.o -c \"/home/tomas-ueda/Área de trabalho/8-bol-pul/src/load_objects.cpp\"",
+  "file": "/home/tomas-ueda/Área de trabalho/8-bol-pul/src/load_objects.cpp",
+  "output": "CMakeFiles/main.dir/src/load_objects.cpp.o"
+},
+{
+  "directory": "/home/tomas-ueda/Área de trabalho/8-bol-pul/build",
+  "command": "/usr/bin/g++  -I\"/home/tomas-ueda/Área de trabalho/8-bol-pul/include\" -g -std=c++11 -Wall -Wno-unused-function -o CMakeFiles/main.dir/src/ball.cpp.o -c \"/home/tomas-ueda/Área de trabalho/8-bol-pul/src/ball.cpp\"",
+  "file": "/home/tomas-ueda/Área de trabalho/8-bol-pul/src/ball.cpp",
+  "output": "CMakeFiles/main.dir/src/ball.cpp.o"
+}
+]
