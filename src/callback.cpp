@@ -33,6 +33,11 @@ extern float g_AngleX;
 extern float g_AngleY;
 extern float g_AngleZ;
 
+extern bool g_goFront;
+extern bool g_goBack;
+extern bool g_goRight;
+extern bool g_goLeft;
+
 extern Camera camera;
 
 void FramebufferSizeCallback(GLFWwindow* window, int width, int height)
@@ -211,6 +216,12 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
     {
         g_AngleZ += (mod & GLFW_MOD_SHIFT) ? -delta : delta;
     }
+
+    g_goFront = glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS; // Front
+    g_goBack = glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS; // Back
+    g_goRight = glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS; // Right
+    g_goLeft = glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS; // Left
+
     /*
     // ======================
     // Não modifique este loop! Ele é utilizando para correção automatizada dos

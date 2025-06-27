@@ -139,6 +139,11 @@ GLuint g_NumLoadedTextures = 0;
 
 float g_DeltaTime = 0.0f;
 
+bool g_goFront = false;
+bool g_goBack = false;
+bool g_goRight = false;
+bool g_goLeft = false;
+
 int main(int argc, char* argv[])
 {   
     // Inicializamos a biblioteca GLFW, utilizada para criar uma janela do
