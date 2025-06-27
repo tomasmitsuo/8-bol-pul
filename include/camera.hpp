@@ -44,6 +44,8 @@ public:
 
     glm::mat4 getProjectionMatrix(float screenRatio) const;
 
+    bool isUsingLookAtCamera() const;
+
     void setUsingPerspectiveProjection(bool value);
 
     bool isUsingPerspectiveProjection();

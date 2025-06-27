@@ -280,7 +280,8 @@ int main(int argc, char* argv[])
         if (g_RightMouseButtonPressed && !white_ball.isMoving())
         {
             const float current_increment = STRENGTH_INCREMENT * g_DeltaTime;
-            shot_strength = std::min(shot_strength + current_increment, MAX_SHOT_STRENGTH);
+            const bool using_look_at_camera = camera.isUsingLookAtCamera();
+            shot_strength = std::min(shot_strength + current_increment, using_look_at_camera ? MAX_SHOT_STRENGTH : 0.0f);
             std::cout << "Shot strength: " << shot_strength << std::endl;
         }
 
