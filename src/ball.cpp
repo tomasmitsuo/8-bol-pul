@@ -6,6 +6,9 @@
 Ball::Ball(float x, float z, float vx, float vz, float radius)
     : x(x), z(z), vx(vx), vz(vz), radius(radius){}
 
+Ball::Ball(float x, float z, float radius)
+    : x(x), z(z), vx(0.0f), vz(0.0f), radius(radius){}
+
 void Ball::update(float dt) 
 {
     x += vx * dt;

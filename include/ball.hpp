@@ -10,6 +10,7 @@ public:
 
 
     Ball(float x, float z, float vx, float vz, float radius);
+    Ball(float x, float z, float radius);
 
     void update(float dt);
     void reflectOnWalls(float tableWidth, float tableHeight);
