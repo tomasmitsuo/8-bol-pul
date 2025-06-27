@@ -11,7 +11,7 @@ private:
     float angleZ;   // Ângulo de rotação em torno do eixo Z
 
 public:
-    Cuestick();
+    Cuestick(float x, float y, float z, float angleX, float angleY, float angleZ);
 
     float getX() const;
 
@@ -24,4 +24,11 @@ public:
     float getAngleX() const;
 
     float getAngleZ() const;
+
+    void setX(float newX);
+    void setY(float newY);
+    void setZ(float newZ);
+    void setAngleY(float newAngleY);
+    void setAngleX(float newAngleX);
+    void setAngleZ(float newAngleZ);
 };

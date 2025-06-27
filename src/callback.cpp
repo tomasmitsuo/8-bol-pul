@@ -29,6 +29,10 @@ extern bool g_LeftMouseButtonPressed;
 extern bool g_RightMouseButtonPressed;
 extern bool g_MiddleMouseButtonPressed;
 
+extern float g_AngleX;
+extern float g_AngleY;
+extern float g_AngleZ;
+
 extern Camera camera;
 
 void FramebufferSizeCallback(GLFWwindow* window, int width, int height)
@@ -192,6 +196,21 @@ void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 // tecla do teclado. Veja http://www.glfw.org/docs/latest/input_guide.html#input_key
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
 {   
+    float delta = 3.141592 / 16; // 22.5 graus, em radianos.
+
+    if (key == GLFW_KEY_X && action == GLFW_PRESS)
+    {
+        g_AngleX += (mod & GLFW_MOD_SHIFT) ? -delta : delta;
+    }
+
+    if (key == GLFW_KEY_Y && action == GLFW_PRESS)
+    {
+        g_AngleY += (mod & GLFW_MOD_SHIFT) ? -delta : delta;
+    }
+    if (key == GLFW_KEY_Z && action == GLFW_PRESS)
+    {
+        g_AngleZ += (mod & GLFW_MOD_SHIFT) ? -delta : delta;
+    }
     /*
     // ======================
     // Não modifique este loop! Ele é utilizando para correção automatizada dos

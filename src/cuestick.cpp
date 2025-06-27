@@ -1,12 +1,12 @@
 #include "cuestick.hpp"
 
-Cuestick::Cuestick()
-    :   x(0.0f), 
-        y(0.0f), 
-        z(0.0f), 
-        angleY(0.0f), 
-        angleX(0.0f), 
-        angleZ(0.0f) {}
+Cuestick::Cuestick(float x, float y, float z, float angleX, float angleY, float angleZ)
+    : x(x), 
+    y(y), 
+    z(z), 
+    angleY(angleY),
+    angleX(angleX),
+    angleZ(angleZ) {}
 
 float Cuestick::getX() const {
     return x;
@@ -30,4 +30,28 @@ float Cuestick::getAngleY() const {
 
 float Cuestick::getAngleZ() const {
     return angleZ;
+}
+
+void Cuestick::setX(float newX) {
+    x = newX;
+}
+
+void Cuestick::setY(float newY) {
+    y = newY;
+}
+
+void Cuestick::setZ(float newZ) {
+    z = newZ;
+}
+
+void Cuestick::setAngleY(float newAngleY) {
+    angleY = newAngleY;
+}
+
+void Cuestick::setAngleX(float newAngleX) {
+    angleX = newAngleX;
+}
+
+void Cuestick::setAngleZ(float newAngleZ) {
+    angleZ = newAngleZ;
 }
