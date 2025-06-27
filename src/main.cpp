@@ -13,6 +13,7 @@
 #include <stdexcept>
 #include <algorithm>
 #include <cmath>
+#include <iostream>
 
 // Headers das bibliotecas OpenGL
 #include <glad/glad.h>   // Criação de contexto OpenGL 3.3
@@ -98,7 +99,8 @@ constexpr float TRIANGULE_CENTER_Z = TABLE_CENTER_Z - TABLE_CENTER_Z + TRIANGULE
 constexpr float WHITE_BALL_X = TRIANGULE_CENTER_X;
 constexpr float WHITE_BALL_Z = TABLE_CENTER_Z + TABLE_CENTER_Z;
 
-constexpr float TABLE_HEIGHT = 1.5f;
+constexpr float MAX_SHOT_STRENGTH = 5.0f;
+constexpr float STRENGTH_INCREMENT = 2.5f;
 
 // DECLARAÇÃO DAS BOLAS
 std::vector<Ball> vec_balls = {
@@ -238,6 +240,10 @@ int main(int argc, char* argv[])
 
     float last_frame_time = (float)glfwGetTime();
 
+    bool last_right_button = g_RightMouseButtonPressed;
+    float shot_strength = 0.0f;
+    bool ball_was_shot = false;
+
     // Ficamos em um loop infinito, renderizando, até que o usuário feche a janela
     while (!glfwWindowShouldClose(window))
     {
@@ -255,6 +261,33 @@ int main(int argc, char* argv[])
 
         glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
         glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));  
+
+        if (!white_ball.isMoving() && ball_was_shot)
+        {
+            ball_was_shot = false;
+            std::cout << "Ball stopped moving." << std::endl;
+        }
+
+        // Only allow a shot if the white ball is not already moving
+        if (!white_ball.isMoving() && !g_RightMouseButtonPressed && last_right_button)
+        {
+            // Apply velocity to the white ball in the camera's direction
+            // The g_CameraViewVector is already normalized and points in the look-at direction
+            std::cout << "Shot with strength: " << shot_strength << std::endl;
+            const glm::vec4 camera_view_vector = camera.getViewVector();
+            white_ball.vx = camera_view_vector.x * shot_strength;
+            white_ball.vz = camera_view_vector.z * shot_strength;
+            shot_strength = 0.0f; // Reset shot strength after applying it
+            ball_was_shot = true;
+        }
+        last_right_button = g_RightMouseButtonPressed;
+        
+        if (g_RightMouseButtonPressed)
+        {
+            const float current_increment = STRENGTH_INCREMENT * g_DeltaTime;
+            shot_strength = std::min(shot_strength + current_increment, MAX_SHOT_STRENGTH);
+            std::cout << "Shot strength: " << shot_strength << std::endl;
+        }
 
         for (auto& ball : vec_balls)
         {
