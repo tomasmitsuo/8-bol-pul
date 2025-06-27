@@ -50,7 +50,7 @@ void loadAllObjects(void)
 
 
 
-void drawInitialScene(std::vector<Ball>& vec_balls)
+void drawInitialScene(const std::vector<Ball>& vec_balls, const Cuestick& cuestick)
 {
     enum enum_name {
             BALL0,
@@ -73,13 +73,14 @@ void drawInitialScene(std::vector<Ball>& vec_balls)
     // Desenhamos a mesa
     glm::mat4 model_table = Matrix_Translate(TABLE_CENTER_X, 0.0f, TABLE_CENTER_Z);
     glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model_table));
-        glUniform1i(g_object_id_uniform, BALL3);
-        DrawVirtualObject("the_pooltable");
+    glUniform1i(g_object_id_uniform, BALL3);
+    DrawVirtualObject("the_pooltable");
 
-
-    glm::mat4 model_cuestick = Matrix_Translate(0.0f, 0.0f, 0.0f)
-        * Matrix_Rotate_Y(g_AngleY + (float)glfwGetTime() * 0.1f);
-        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model_cuestick));
-        glUniform1i(g_object_id_uniform, CUESTICK);
-        DrawVirtualObject("the_cuestick");
+    glm::mat4 model_cuestick = Matrix_Translate(cuestick.getX(), cuestick.getY(), cuestick.getZ()) 
+        * Matrix_Rotate_Y(cuestick.getAngleY())
+        * Matrix_Rotate_X(cuestick.getAngleX())
+        * Matrix_Rotate_Z(cuestick.getAngleZ());
+    glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model_cuestick));
+    glUniform1i(g_object_id_uniform, CUESTICK);
+    DrawVirtualObject("the_cuestick");
 }

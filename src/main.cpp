@@ -125,6 +125,14 @@ Camera camera(
     3.141592f / 3.0f // Campo de visão (field of view) em radianos
 );
 
+Cuestick cuestick(
+    white_ball.x, 
+    TABLE_HEIGHT + 0.1f, 
+    white_ball.z, 
+    g_AngleX, // Ângulo X
+    g_AngleY, // Ângulo Y
+    g_AngleZ // Ângulo Z
+);
 
 // Número de texturas carregadas pela função LoadTextureImage()
 GLuint g_NumLoadedTextures = 0;
@@ -263,7 +271,7 @@ int main(int argc, char* argv[])
         }
         last_right_button = g_RightMouseButtonPressed;
         
-        if (g_RightMouseButtonPressed)
+        if (g_RightMouseButtonPressed && !white_ball.isMoving())
         {
             const float current_increment = STRENGTH_INCREMENT * g_DeltaTime;
             shot_strength = std::min(shot_strength + current_increment, MAX_SHOT_STRENGTH);
@@ -280,7 +288,13 @@ int main(int argc, char* argv[])
                               TABLE_WIDTH,
                               TABLE_LENGTH);
 
-        drawInitialScene(vec_balls);
+        cuestick.setX(white_ball.x);
+        cuestick.setZ(white_ball.z);
+        cuestick.setAngleY(camera.getTheta());
+        cuestick.setAngleX(-camera.getPhi());
+        cuestick.setAngleZ(g_AngleZ);
+
+        drawInitialScene(vec_balls, cuestick);
 
         TextRendering_ShowEulerAngles(window);
         TextRendering_ShowProjection(window);
