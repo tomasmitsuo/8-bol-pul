@@ -18,6 +18,7 @@ set(SOURCES
   src/scene.cpp
   src/load_objects.cpp
   src/ball.cpp
+  src/collision.cpp
 )
 
 cmake_minimum_required(VERSION 3.5.0)
