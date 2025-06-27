@@ -106,6 +106,8 @@ constexpr float TRIANGULE_CENTER_Z = 0.8f;
 constexpr float WHITE_BALL_X = TRIANGULE_CENTER_X; // Posição inicial da bola branca
 constexpr float WHITE_BALL_Z = 8.0f; // Posição inicial da bola branca
 
+constexpr float TABLE_HEIGHT = 1.5f;
+
 // DECLARAÇÃO DAS BOLAS
 std::vector<Ball> vec_balls = {
     Ball(WHITE_BALL_X, WHITE_BALL_Z, BALL_RADIUS), // WHITE BALL
@@ -236,12 +238,15 @@ int main(int argc, char* argv[])
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glUseProgram(g_GpuProgramID);
+
+        const auto& white_ball = vec_balls[0];
+
         float r = g_CameraDistance;
         float y = r*sin(g_CameraPhi);
-        float z = r*cos(g_CameraPhi)*cos(g_CameraTheta);
-        float x = r*cos(g_CameraPhi)*sin(g_CameraTheta);
+        float z = r*cos(g_CameraPhi)*cos(g_CameraTheta) + white_ball.z;
+        float x = r*cos(g_CameraPhi)*sin(g_CameraTheta) + white_ball.x;
         glm::vec4 camera_position_c  = glm::vec4(x,y,z,1.0f); // Ponto "c", centro da câmera
-        glm::vec4 camera_lookat_l    = glm::vec4(0.4f,1.5f,0.4f,1.0f); // Ponto "l", para onde a câmera (look-at) estará sempre olhando
+        glm::vec4 camera_lookat_l    = glm::vec4(white_ball.x,TABLE_HEIGHT,white_ball.z,1.0f); // Ponto "l", para onde a câmera (look-at) estará sempre olhando
         glm::vec4 camera_view_vector = camera_lookat_l - camera_position_c; // Vetor "view", sentido para onde a câmera está virada
         glm::vec4 camera_up_vector   = glm::vec4(0.0f,1.0f,0.0f,0.0f); // Vetor "up" fixado para apontar para o "céu" (eito Y global)
         glm::mat4 view = Matrix_Camera_View(camera_position_c, camera_view_vector, camera_up_vector);
