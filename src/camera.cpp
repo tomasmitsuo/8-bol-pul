@@ -87,6 +87,10 @@ glm::mat4 Camera::getProjectionMatrix(float screenRatio) const {
     }
 }
 
+bool Camera::isUsingLookAtCamera() const {
+    return using_look_at_camera;
+}
+
 void Camera::setUsingPerspectiveProjection(bool value) {
     using_perspective_projection = value;
 }
