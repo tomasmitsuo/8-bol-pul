@@ -29,15 +29,7 @@ extern bool g_LeftMouseButtonPressed;
 extern bool g_RightMouseButtonPressed;
 extern bool g_MiddleMouseButtonPressed;
 
-
 extern Camera camera;
-
-extern float g_ForearmAngleZ;
-extern float g_ForearmAngleX;
-
-
-extern float g_TorsoPositionX;
-extern float g_TorsoPositionY;
 
 void FramebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
@@ -145,12 +137,12 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
     if (g_RightMouseButtonPressed)
     {
         // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
-        float dx = xpos - g_LastCursorPosX;
-        float dy = ypos - g_LastCursorPosY;
+        // float dx = xpos - g_LastCursorPosX;
+        // float dy = ypos - g_LastCursorPosY;
     
         // Atualizamos parâmetros da antebraço com os deslocamentos
-        g_ForearmAngleZ -= 0.01f*dx;
-        g_ForearmAngleX += 0.01f*dy;
+        // g_ForearmAngleZ -= 0.01f*dx;
+        // g_ForearmAngleX += 0.01f*dy;
     
         // Atualizamos as variáveis globais para armazenar a posição atual do
         // cursor como sendo a última posição conhecida do cursor.
@@ -161,12 +153,12 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
     if (g_MiddleMouseButtonPressed)
     {
         // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
-        float dx = xpos - g_LastCursorPosX;
-        float dy = ypos - g_LastCursorPosY;
+        // float dx = xpos - g_LastCursorPosX;
+        // float dy = ypos - g_LastCursorPosY;
     
         // Atualizamos parâmetros da antebraço com os deslocamentos
-        g_TorsoPositionX += 0.01f*dx;
-        g_TorsoPositionY -= 0.01f*dy;
+        // g_TorsoPositionX += 0.01f*dx;
+        // g_TorsoPositionY -= 0.01f*dy;
     
         // Atualizamos as variáveis globais para armazenar a posição atual do
         // cursor como sendo a última posição conhecida do cursor.
