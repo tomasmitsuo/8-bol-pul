@@ -12,6 +12,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <algorithm>
+#include <cmath>
 
 // Headers das bibliotecas OpenGL
 #include <glad/glad.h>   // Criação de contexto OpenGL 3.3
@@ -46,8 +47,6 @@
 #include "cuestick.hpp"
 #include "camera.hpp"
 
-
-#define BALL_RADIUS 10
 
 std::map<std::string, SceneObject> g_VirtualScene;
 std::stack<glm::mat4>  g_MatrixStack;
@@ -97,26 +96,44 @@ GLint g_object_id_uniform;
 GLint g_bbox_min_uniform;
 GLint g_bbox_max_uniform;
 
+constexpr float BALL_RADIUS = 0.14f;
+constexpr float BALL_DIAMITER = BALL_RADIUS * 2.0f;
+const float ROW_SPACING = std::sqrt(3.0f) * BALL_RADIUS;
+
+constexpr float TRIANGULE_CENTER_X = 0.4f;
+constexpr float TRIANGULE_CENTER_Z = 0.8f;
+
+constexpr float WHITE_BALL_X = TRIANGULE_CENTER_X; // Posição inicial da bola branca
+constexpr float WHITE_BALL_Z = 8.0f; // Posição inicial da bola branca
 
 // DECLARAÇÃO DAS BOLAS
 std::vector<Ball> vec_balls = {
-    Ball(0.4f, 8.0f, 0.0f, 0.0f, BALL_RADIUS), // WHITE BALL
-    Ball(0.0f, 0.0f, 0.0f, 0.0f, BALL_RADIUS), // 1
-    Ball(0.2f, 0.0f, 0.0f, 0.0f, BALL_RADIUS), // 2
-    Ball(0.4f, 0.0f, 0.0f, 0.0f, BALL_RADIUS), // 3
-    Ball(0.6f, 0.0f, 0.0f, 0.0f, BALL_RADIUS), // 4
-    Ball(0.8f, 0.0f, 0.0f, 0.0f, BALL_RADIUS), // 5
-    Ball(0.1f, 0.2f, 0.0f, 0.0f, BALL_RADIUS), // 6
-    Ball(0.3f, 0.2f, 0.0f, 0.0f, BALL_RADIUS), // 7
-    Ball(0.5f, 0.2f, 0.0f, 0.0f, BALL_RADIUS), // 8
-    Ball(0.7f, 0.2f, 0.0f, 0.0f, BALL_RADIUS), // 9
-    Ball(0.2f, 0.4f, 0.0f, 0.0f, BALL_RADIUS), // 10
-    Ball(0.4f, 0.4f, 0.0f, 0.0f, BALL_RADIUS), // 11
-    Ball(0.6f, 0.4f, 0.0f, 0.0f, BALL_RADIUS), // 12
-    Ball(0.3f, 0.6f, 0.0f, 0.0f, BALL_RADIUS), // 13
-    Ball(0.5f, 0.6f, 0.0f, 0.0f, BALL_RADIUS), // 14
-    Ball(0.4f, 0.8f, 0.0f, 0.0f, BALL_RADIUS) // 15
-    
+    Ball(WHITE_BALL_X, WHITE_BALL_Z, BALL_RADIUS), // WHITE BALL
+
+    // First row
+    Ball(TRIANGULE_CENTER_X, TRIANGULE_CENTER_Z, BALL_RADIUS), // 1
+
+    // Second row
+    Ball(TRIANGULE_CENTER_X - BALL_RADIUS, TRIANGULE_CENTER_Z - ROW_SPACING, BALL_RADIUS), // 2
+    Ball(TRIANGULE_CENTER_X + BALL_RADIUS, TRIANGULE_CENTER_Z - ROW_SPACING, BALL_RADIUS), // 3
+
+    // Third row
+    Ball(TRIANGULE_CENTER_X - BALL_DIAMITER, TRIANGULE_CENTER_Z - 2*ROW_SPACING, BALL_RADIUS), // 4
+    Ball(TRIANGULE_CENTER_X, TRIANGULE_CENTER_Z - 2*ROW_SPACING, BALL_RADIUS), // 5
+    Ball(TRIANGULE_CENTER_X + BALL_DIAMITER, TRIANGULE_CENTER_Z - 2*ROW_SPACING, BALL_RADIUS), // 6
+
+    // Fourth row
+    Ball(TRIANGULE_CENTER_X - 3*BALL_RADIUS, TRIANGULE_CENTER_Z - 3*ROW_SPACING, BALL_RADIUS), // 7
+    Ball(TRIANGULE_CENTER_X - BALL_RADIUS, TRIANGULE_CENTER_Z - 3*ROW_SPACING, BALL_RADIUS), // 8
+    Ball(TRIANGULE_CENTER_X + BALL_RADIUS, TRIANGULE_CENTER_Z - 3*ROW_SPACING, BALL_RADIUS), // 9
+    Ball(TRIANGULE_CENTER_X + 3*BALL_RADIUS, TRIANGULE_CENTER_Z - 3*ROW_SPACING, BALL_RADIUS), // 10
+
+    // Fifth row
+    Ball(TRIANGULE_CENTER_X - 2*BALL_DIAMITER, TRIANGULE_CENTER_Z - 4*ROW_SPACING, BALL_RADIUS), // 11
+    Ball(TRIANGULE_CENTER_X - BALL_DIAMITER, TRIANGULE_CENTER_Z - 4*ROW_SPACING, BALL_RADIUS), // 12
+    Ball(TRIANGULE_CENTER_X, TRIANGULE_CENTER_Z - 4*ROW_SPACING, BALL_RADIUS), // 13
+    Ball(TRIANGULE_CENTER_X + BALL_DIAMITER, TRIANGULE_CENTER_Z - 4*ROW_SPACING, BALL_RADIUS), // 14
+    Ball(TRIANGULE_CENTER_X + 2*BALL_DIAMITER, TRIANGULE_CENTER_Z - 4*ROW_SPACING, BALL_RADIUS)  // 15
 };
 
 
