@@ -46,6 +46,7 @@
 #include "ball.hpp"
 #include "cuestick.hpp"
 #include "camera.hpp"
+#include "collision.hpp"
 
 
 std::map<std::string, SceneObject> g_VirtualScene;
@@ -89,16 +90,21 @@ GLint g_bbox_min_uniform;
 GLint g_bbox_max_uniform;
 
 constexpr float TABLE_HEIGHT = 1.5f;
+constexpr float TABLE_WIDTH = 3.5f*2;
+constexpr float TABLE_LENGTH = 5.5f*2;
+constexpr float TABLE_CENTER_X = 0.4f;
+constexpr float TABLE_CENTER_Z = 4.0f;
 
 constexpr float BALL_RADIUS = 0.13f;
 constexpr float BALL_DIAMITER = BALL_RADIUS * 2.0f;
 const float ROW_SPACING = std::sqrt(3.0f) * BALL_RADIUS;
 
-constexpr float TRIANGULE_CENTER_X = 0.4f;
-constexpr float TRIANGULE_CENTER_Z = 0.8f;
+constexpr float TRIANGULE_CENTER_X = TABLE_CENTER_X;
+constexpr float TRIANGULE_OFFSET_Z = 0.8f;
+constexpr float TRIANGULE_CENTER_Z = TABLE_CENTER_Z - TABLE_CENTER_Z + TRIANGULE_OFFSET_Z;
 
-constexpr float WHITE_BALL_X = TRIANGULE_CENTER_X; // Posição inicial da bola branca
-constexpr float WHITE_BALL_Z = 8.0f; // Posição inicial da bola branca
+constexpr float WHITE_BALL_X = TRIANGULE_CENTER_X;
+constexpr float WHITE_BALL_Z = TABLE_CENTER_Z + TABLE_CENTER_Z;
 
 constexpr float TABLE_HEIGHT = 1.5f;
 
@@ -135,6 +141,8 @@ std::vector<Ball> vec_balls = {
 
 // Número de texturas carregadas pela função LoadTextureImage()
 GLuint g_NumLoadedTextures = 0;
+
+float g_DeltaTime = 0.0f;
 
 auto& white_ball = vec_balls[0];
 Camera camera(
@@ -236,11 +244,15 @@ int main(int argc, char* argv[])
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
 
-    
+    float last_frame_time = (float)glfwGetTime();
 
     // Ficamos em um loop infinito, renderizando, até que o usuário feche a janela
     while (!glfwWindowShouldClose(window))
     {
+        float current_frame_time = (float)glfwGetTime();
+        g_DeltaTime = current_frame_time - last_frame_time;
+        last_frame_time = current_frame_time;
+
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glUseProgram(g_GpuProgramID);
@@ -251,6 +263,16 @@ int main(int argc, char* argv[])
 
         glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
         glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));  
+
+        for (auto& ball : vec_balls)
+        {
+            ball.update(g_DeltaTime);
+        }
+
+        handle_ball_collisions(vec_balls,
+                              std::make_pair(TABLE_CENTER_X, TABLE_CENTER_Z),
+                              TABLE_WIDTH,
+                              TABLE_LENGTH);
 
         drawInitialScene(vec_balls);
 
