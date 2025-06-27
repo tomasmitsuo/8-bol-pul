@@ -76,9 +76,9 @@ void drawInitialScene(std::vector<Ball>& vec_balls)
         DrawVirtualObject("the_pooltable");
 
 
-    glm::mat4 model = Matrix_Translate(0.0f, 0.0f, 0.0f)
+    glm::mat4 model_cuestick = Matrix_Translate(0.0f, 0.0f, 0.0f)
         * Matrix_Rotate_Y(g_AngleY + (float)glfwGetTime() * 0.1f);
-        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model_cuestick));
         glUniform1i(g_object_id_uniform, CUESTICK);
         DrawVirtualObject("the_cuestick");
 }
