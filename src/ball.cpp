@@ -9,25 +9,27 @@ Ball::Ball(float x, float z, float vx, float vz, float radius)
 Ball::Ball(float x, float z, float radius)
     : x(x), z(z), vx(0.0f), vz(0.0f), radius(radius){}
 
+constexpr float FRICTION = 0.99f;
+
 void Ball::update(float dt) 
 {
     x += vx * dt;
     z += vz * dt;
 
-    vx *= 0.99f;
-    vz *= 0.99f;
+    vx *= FRICTION;
+    vz *= FRICTION;
 
     if (std::abs(vx) < 0.01f) vx = 0;
     if (std::abs(vz) < 0.01f) vz = 0;
 }
 
-void Ball::reflectOnWalls(float tableWidth, float tableHeight)
+void Ball::reflectOnWalls(float table_center_x, float table_center_z, float tableWidth, float tableHeight)
 {
-    if (x - radius < 0 || x + radius > tableWidth) {
-        vx *= -1;
+    if (x - radius < table_center_x - tableWidth / 2 || x + radius > table_center_x + tableWidth / 2) {
+        vx *= -FRICTION;
     }
-    if (z - radius < 0 || z + radius > tableHeight) {
-        vz *= -1;
+    if (z - radius < table_center_z - tableHeight / 2 || z + radius > table_center_z + tableHeight / 2) {
+        vz *= -FRICTION;
     }
 }
 

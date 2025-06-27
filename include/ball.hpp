@@ -13,7 +13,7 @@ public:
     Ball(float x, float z, float radius);
 
     void update(float dt);
-    void reflectOnWalls(float tableWidth, float tableHeight);
+    void reflectOnWalls(float table_center_x, float table_center_z, float tableWidth, float tableHeight);
     bool isMoving() const;
 
     float getBallSpeed();
