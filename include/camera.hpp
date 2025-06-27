@@ -12,26 +12,28 @@ private:
     glm::vec4 lookAt;
     glm::vec4 upVector;
     glm::vec4 projection;
+    glm::vec4 viewVector;
 
     float theta;
     float phi;
     float distance;
 
     float camera_height;
-
+    float camera_speed;
     
     float nearPlane;
     float farPlane;
     float fieldOfView;
 
     bool using_perspective_projection;
+    bool using_look_at_camera;
 
     const Ball& targetBall;
 
 public:
-    Camera(const Ball &targetBall, float camera_height, float distance, float theta, float phi, float nearPlane, float farPlane, float fieldOfView);
+    Camera(const Ball &targetBall, float camera_height, float camera_speed, float distance, float theta, float phi, float nearPlane, float farPlane, float fieldOfView);
 
-    void updatePosition();
+    void updatePosition(float delta_time, bool go_front, bool go_back, bool go_left, bool go_right);
 
     glm::vec4 getPosition() const;
     glm::vec4 getLookAt() const;
@@ -57,4 +59,6 @@ public:
     void addTheta(float deltaTheta);
     void addPhi(float deltaPhi);
     void addDistance(float deltaDistance);
+
+    void setCameraType(bool use_look_at_camera);
 };

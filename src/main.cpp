@@ -116,18 +116,19 @@ std::vector<Ball> vec_balls = {
 auto& white_ball = vec_balls[0];
 Camera camera(
     white_ball, 
-    TABLE_HEIGHT,
-    3.5f, // Distância da câmera
-    0.0f, // Ângulo theta (no plano ZX)
-    0.6f, // Ângulo phi (em relação ao eixo Y)
-    -0.1f, // Posição do near plane
-    -100.0f, // Posição do far plane
-    3.141592f / 3.0f // Campo de visão (field of view) em radianos
+    CAMERA_HEIGHT, // Altura da câmera
+    CAMERA_SPEED, // Velocidade da câmera
+    CAMERA_DISTANCE, // Distância da câmera
+    CAMERA_THETA, // Ângulo theta (no plano ZX)
+    CAMERA_PHI, // Ângulo phi (em relação ao eixo Y)
+    NEAR_PLANE, // Posição do near plane
+    FAR_PLANE, // Posição do far plane
+    FIELD_OF_VIEW // Campo de visão (field of view) em radianos
 );
 
 Cuestick cuestick(
     white_ball.x, 
-    TABLE_HEIGHT + 0.1f, 
+    CAMERA_HEIGHT, 
     white_ball.z, 
     g_AngleX, // Ângulo X
     g_AngleY, // Ângulo Y
@@ -249,7 +250,7 @@ int main(int argc, char* argv[])
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glUseProgram(g_GpuProgramID);
 
-        camera.updatePosition();
+        camera.updatePosition(g_DeltaTime, g_goFront, g_goBack, g_goRight, g_goLeft);
         const glm::mat4 view = camera.getViewMatrix();
         const glm::mat4 projection = camera.getProjectionMatrix(g_ScreenRatio);
 

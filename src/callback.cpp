@@ -217,6 +217,13 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
         g_AngleZ += (mod & GLFW_MOD_SHIFT) ? -delta : delta;
     }
 
+    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
+    {
+        static bool current_camera_type = true; // true = look-at, false = perspective
+        current_camera_type = !current_camera_type;
+        camera.setCameraType(current_camera_type);
+    }
+
     g_goFront = glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS; // Front
     g_goBack = glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS; // Back
     g_goRight = glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS; // Right
