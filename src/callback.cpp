@@ -21,6 +21,8 @@
 #include <glad/glad.h>   // Criação de contexto OpenGL 3.3
 #include <GLFW/glfw3.h>  // Criação de janelas do sistema operacional
 
+#include "camera.hpp"
+
 
 extern float g_ScreenRatio;
 extern bool g_LeftMouseButtonPressed;
@@ -28,8 +30,7 @@ extern bool g_RightMouseButtonPressed;
 extern bool g_MiddleMouseButtonPressed;
 
 
-extern float g_CameraTheta;
-extern float g_CameraPhi;
+extern Camera camera;
 
 extern float g_ForearmAngleZ;
 extern float g_ForearmAngleX;
@@ -37,8 +38,6 @@ extern float g_ForearmAngleX;
 
 extern float g_TorsoPositionX;
 extern float g_TorsoPositionY;
-
-extern float g_CameraDistance;
 
 void FramebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
@@ -124,19 +123,19 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
         float dy = ypos - g_LastCursorPosY;
     
         // Atualizamos parâmetros da câmera com os deslocamentos
-        g_CameraTheta -= 0.01f*dx;
-        g_CameraPhi   += 0.01f*dy;
+        camera.addTheta(-0.01f*dx);
+        camera.addPhi(0.01f*dy);
     
         // Em coordenadas esféricas, o ângulo phi deve ficar entre -pi/2 e +pi/2.
         float phimax = 3.141592f/2;
         float phimin = -phimax;
     
-        if (g_CameraPhi > phimax)
-            g_CameraPhi = phimax;
-    
-        if (g_CameraPhi < phimin)
-            g_CameraPhi = phimin;
-    
+        if (camera.getPhi() > phimax)
+            camera.setPhi(phimax);
+
+        if (camera.getPhi() < phimin)
+            camera.setPhi(phimin);
+
         // Atualizamos as variáveis globais para armazenar a posição atual do
         // cursor como sendo a última posição conhecida do cursor.
         g_LastCursorPosX = xpos;
@@ -183,7 +182,7 @@ void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
     // Atualizamos a distância da câmera para a origem utilizando a
     // movimentação da "rodinha", simulando um ZOOM.
-    g_CameraDistance -= 0.1f*yoffset;
+    camera.addDistance(-0.1f*yoffset);
 
     // Uma câmera look-at nunca pode estar exatamente "em cima" do ponto para
     // onde ela está olhando, pois isto gera problemas de divisão por zero na
@@ -191,8 +190,8 @@ void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
     // nunca pode ser zero. Versões anteriores deste código possuíam este bug,
     // o qual foi detectado pelo aluno Vinicius Fraga (2017/2).
     const float verysmallnumber = std::numeric_limits<float>::epsilon();
-    if (g_CameraDistance < verysmallnumber)
-        g_CameraDistance = verysmallnumber;
+    if (camera.getDistance() < verysmallnumber)
+        camera.setDistance(verysmallnumber);
 }
 
 
