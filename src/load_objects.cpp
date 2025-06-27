@@ -1,6 +1,7 @@
 #include "scene.hpp"
 #include "shaders.hpp"
-# include "load_objects.hpp"
+#include "load_objects.hpp"
+#include "obj_constants.hpp"
 
 #include "matrices.h"
 #include "ball.hpp"
@@ -70,7 +71,7 @@ void drawInitialScene(std::vector<Ball>& vec_balls)
 
 
     // Desenhamos a mesa
-    glm::mat4 model_table = Matrix_Translate(0.4f,0.0f,4.0f);
+    glm::mat4 model_table = Matrix_Translate(TABLE_CENTER_X, 0.0f, TABLE_CENTER_Z);
     glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model_table));
         glUniform1i(g_object_id_uniform, BALL3);
         DrawVirtualObject("the_pooltable");
