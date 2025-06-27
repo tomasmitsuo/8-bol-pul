@@ -96,7 +96,7 @@ GLint g_object_id_uniform;
 GLint g_bbox_min_uniform;
 GLint g_bbox_max_uniform;
 
-constexpr float BALL_RADIUS = 0.14f;
+constexpr float BALL_RADIUS = 0.13f;
 constexpr float BALL_DIAMITER = BALL_RADIUS * 2.0f;
 const float ROW_SPACING = std::sqrt(3.0f) * BALL_RADIUS;
 
