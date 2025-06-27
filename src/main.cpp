@@ -66,14 +66,6 @@ bool g_LeftMouseButtonPressed = false;
 bool g_RightMouseButtonPressed = false; // Análogo para botão direito do mouse
 bool g_MiddleMouseButtonPressed = false; // Análogo para botão do meio do mouse
 
-// Variáveis que controlam rotação do antebraço
-float g_ForearmAngleZ = 0.0f;
-float g_ForearmAngleX = 0.0f;
-
-// Variáveis que controlam translação do torso
-float g_TorsoPositionX = 0.0f;
-float g_TorsoPositionY = 0.0f;
-
 // Variável que controla o tipo de projeção utilizada: perspectiva ou ortográfica.
 bool g_UsePerspectiveProjection = true;
 
@@ -138,12 +130,6 @@ std::vector<Ball> vec_balls = {
     Ball(TRIANGULE_CENTER_X + 2*BALL_DIAMITER, TRIANGULE_CENTER_Z - 4*ROW_SPACING, BALL_RADIUS)  // 15
 };
 
-
-// Número de texturas carregadas pela função LoadTextureImage()
-GLuint g_NumLoadedTextures = 0;
-
-float g_DeltaTime = 0.0f;
-
 auto& white_ball = vec_balls[0];
 Camera camera(
     white_ball, 
@@ -155,6 +141,12 @@ Camera camera(
     -100.0f, // Posição do far plane
     3.141592f / 3.0f // Campo de visão (field of view) em radianos
 );
+
+
+// Número de texturas carregadas pela função LoadTextureImage()
+GLuint g_NumLoadedTextures = 0;
+
+float g_DeltaTime = 0.0f;
 
 int main(int argc, char* argv[])
 {   
