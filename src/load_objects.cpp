@@ -52,25 +52,13 @@ void loadAllObjects(void)
 
 void drawInitialScene(const std::vector<Ball>& vec_balls, const Cuestick& cuestick, const Camera& camera, bool isWhiteBallMoving)
 {
-    enum enum_name {
-            BALL0,
-            BALL1,BALL2,BALL3,BALL4,BALL5,
-            BALL6,BALL7,BALL8,BALL9,BALL10,
-            BALL11,BALL12,BALL13,BALL14,BALL15,
-            TABLE, CUESTICK
-        };
-
-    int balls[] = {BALL0, BALL1, BALL2, BALL3, BALL4, BALL5, BALL6, BALL7, BALL8, BALL9, BALL10, BALL11, BALL12, BALL13, BALL14, BALL15};
-
-    for(int i=0; i<16; i++){
-        glm::mat4 t = Matrix_Translate(vec_balls[i].x, 1.1f, vec_balls[i].z);
-
-        glm::mat4 r = Matrix_Rotate(-vec_balls[i].getRotationAngle(), vec_balls[i].getRotationAxis());
-
+    for (const auto& ball : vec_balls)
+    {
+        glm::mat4 t = Matrix_Translate(ball.x, 1.1f, ball.z);
+        glm::mat4 r = Matrix_Rotate(-ball.getRotationAngle(), ball.getRotationAxis());
         glm::mat4 m = t * r;
-
-        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(m));
-        glUniform1i(g_object_id_uniform, balls[i]);
+        glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(m));
+        glUniform1i(g_object_id_uniform, ball.getObjectID());
         DrawVirtualObject("the_ball");
     }
 
@@ -78,7 +66,7 @@ void drawInitialScene(const std::vector<Ball>& vec_balls, const Cuestick& cuesti
     // Desenhamos a mesa
     glm::mat4 model_table = Matrix_Translate(TABLE_CENTER_X, 0.0f, TABLE_CENTER_Z);
     glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model_table));
-    glUniform1i(g_object_id_uniform, BALL3);
+    glUniform1i(g_object_id_uniform, static_cast<int>(ObjectID::BALL3));
     DrawVirtualObject("the_pooltable");
 
     if (!isWhiteBallMoving)
@@ -92,7 +80,7 @@ void drawInitialScene(const std::vector<Ball>& vec_balls, const Cuestick& cuesti
 
         glm::mat4 model_cuestick = t * r_yaw * r_pitch * make_cue_horizontal;
         glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model_cuestick));
-        glUniform1i(g_object_id_uniform, CUESTICK);
+        glUniform1i(g_object_id_uniform, cuestick.getObjectID());
         DrawVirtualObject("the_cuestick");
     }
 }

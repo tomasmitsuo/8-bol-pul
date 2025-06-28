@@ -2,6 +2,8 @@
 
 #include "ball.hpp"
 
+enum class ObjectID : int;
+
 class Cuestick {
 
 public:
@@ -20,13 +22,15 @@ private:
     float angleX;   // Ângulo de rotação em torno do eixo X
     float angleZ;   // Ângulo de rotação em torno do eixo Z
 
+    int object_id;
+
     CueState state;
     float pullBackDistance;
     float shotPower;
     float horizontalOffset;
 
 public:
-    Cuestick(float x, float y, float z, float angleX, float angleY, float angleZ);
+    Cuestick(ObjectID id, float x, float y, float z, float angleX, float angleY, float angleZ);
 
     void update(float deltaTime, Ball& whiteBall);
 
@@ -50,4 +54,6 @@ public:
     void setAngleY(float newAngleY);
     void setAngleX(float newAngleX);
     void setAngleZ(float newAngleZ);
+
+    int getObjectID() const;
 };
