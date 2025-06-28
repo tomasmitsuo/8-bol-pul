@@ -37,11 +37,13 @@ public:
 
     Ball(ObjectID id, float x, float z, float vx, float vz, float radius);
     Ball(ObjectID id, float x, float z, float radius);
+    Ball(ObjectID id, glm::vec2 position, float radius);
 
     void update(float dt);
     void reflectOnWalls(float table_center_x, float table_center_z, float tableWidth, float tableHeight);
     bool isMoving() const;
     void pocket();
+    void unpocket();
 
     float getBallSpeed();
     float getBallPositionX();

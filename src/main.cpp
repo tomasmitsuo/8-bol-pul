@@ -48,6 +48,7 @@
 #include "ball.hpp"
 #include "camera.hpp"
 #include "cuestick.hpp"
+#include "game_balls.hpp"
 
 std::map<std::string, SceneObject> g_VirtualScene;
 std::stack<glm::mat4>  g_MatrixStack;
@@ -82,36 +83,15 @@ GLint g_bbox_min_uniform;
 GLint g_bbox_max_uniform;
 
 // DECLARAÇÃO DAS BOLAS
-std::vector<Ball> vec_balls = {
-    Ball(ObjectID::WHITE_BALL, Ball::WHITE_BALL_X, Ball::WHITE_BALL_Z, Ball::RADIUS),
+GameBalls g_GameBalls(
+    Ball::RADIUS, 
+    glm::vec2(Ball::WHITE_BALL_X, Ball::WHITE_BALL_Z), 
+    glm::vec2(Ball::TRIANGLE_CENTER_X, Ball::TRIANGLE_CENTER_Z), 
+    Ball::ROW_SPACING
+);
+Ball& white_ball = g_GameBalls.getWhiteBall();
+std::vector<Ball>& vec_balls = g_GameBalls.getBalls();
 
-    // First row
-    Ball(ObjectID::BALL1, Ball::TRIANGLE_CENTER_X, Ball::TRIANGLE_CENTER_Z, Ball::RADIUS),
-
-    // Second row
-    Ball(ObjectID::BALL2, Ball::TRIANGLE_CENTER_X - Ball::RADIUS, Ball::TRIANGLE_CENTER_Z - Ball::ROW_SPACING, Ball::RADIUS),
-    Ball(ObjectID::BALL3, Ball::TRIANGLE_CENTER_X + Ball::RADIUS, Ball::TRIANGLE_CENTER_Z - Ball::ROW_SPACING, Ball::RADIUS),
-
-    // Third row
-    Ball(ObjectID::BALL4, Ball::TRIANGLE_CENTER_X - Ball::DIAMETER, Ball::TRIANGLE_CENTER_Z - 2*Ball::ROW_SPACING, Ball::RADIUS),
-    Ball(ObjectID::BALL5, Ball::TRIANGLE_CENTER_X, Ball::TRIANGLE_CENTER_Z - 2*Ball::ROW_SPACING, Ball::RADIUS),
-    Ball(ObjectID::BALL6, Ball::TRIANGLE_CENTER_X + Ball::DIAMETER, Ball::TRIANGLE_CENTER_Z - 2*Ball::ROW_SPACING, Ball::RADIUS),
-
-    // Fourth row
-    Ball(ObjectID::BALL7, Ball::TRIANGLE_CENTER_X - 3*Ball::RADIUS, Ball::TRIANGLE_CENTER_Z - 3*Ball::ROW_SPACING, Ball::RADIUS),
-    Ball(ObjectID::BALL8, Ball::TRIANGLE_CENTER_X - Ball::RADIUS, Ball::TRIANGLE_CENTER_Z - 3*Ball::ROW_SPACING, Ball::RADIUS),
-    Ball(ObjectID::BALL9, Ball::TRIANGLE_CENTER_X + Ball::RADIUS, Ball::TRIANGLE_CENTER_Z - 3*Ball::ROW_SPACING, Ball::RADIUS),
-    Ball(ObjectID::BALL10, Ball::TRIANGLE_CENTER_X + 3*Ball::RADIUS, Ball::TRIANGLE_CENTER_Z - 3*Ball::ROW_SPACING, Ball::RADIUS),
-
-    // Fifth row
-    Ball(ObjectID::BALL11, Ball::TRIANGLE_CENTER_X - 2*Ball::DIAMETER, Ball::TRIANGLE_CENTER_Z - 4*Ball::ROW_SPACING, Ball::RADIUS),
-    Ball(ObjectID::BALL12, Ball::TRIANGLE_CENTER_X - Ball::DIAMETER, Ball::TRIANGLE_CENTER_Z - 4*Ball::ROW_SPACING, Ball::RADIUS),
-    Ball(ObjectID::BALL13, Ball::TRIANGLE_CENTER_X, Ball::TRIANGLE_CENTER_Z - 4*Ball::ROW_SPACING, Ball::RADIUS),
-    Ball(ObjectID::BALL14, Ball::TRIANGLE_CENTER_X + Ball::DIAMETER, Ball::TRIANGLE_CENTER_Z - 4*Ball::ROW_SPACING, Ball::RADIUS),
-    Ball(ObjectID::BALL15, Ball::TRIANGLE_CENTER_X + 2*Ball::DIAMETER, Ball::TRIANGLE_CENTER_Z - 4*Ball::ROW_SPACING, Ball::RADIUS)
-};
-
-Ball& white_ball = vec_balls[0];
 
 Camera camera(
     white_ball, 

@@ -21,6 +21,7 @@ set(SOURCES
   src/cuestick.cpp
   src/table.cpp
   src/collision.cpp
+  src/game_balls.cpp
 )
 
 cmake_minimum_required(VERSION 3.5.0)
