@@ -1,6 +1,8 @@
 #include "ball.hpp"
 #include "cuestick.hpp"
 #include "table.hpp"
+#include "matrices.h"
+
 
 #include <cmath>
 #include <iostream>
@@ -77,7 +79,7 @@ void Cuestick::calculateShooting(float deltaTime, Ball& white_ball,const glm::ve
 
         force_vec += sidestep_vec * horizontalOffset * Cuestick::SIDESTEP_FACTOR;
 
-        force_vec = glm::normalize(force_vec);
+        force_vec = force_vec / norm(force_vec);
 
         // Apply force to the white ball
         white_ball.vx = force_vec.x * shotPower * Cuestick::SHOT_POWER_MULTIPLIER;

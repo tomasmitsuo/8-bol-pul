@@ -155,6 +155,14 @@ inline float norm(glm::vec4 v)
     return sqrt( vx*vx + vy*vy + vz*vz );
 }
 
+inline float norm(glm::vec2 v)
+{
+    float vx = v.x;
+    float vy = v.y;
+
+    return sqrt( vx*vx + vy*vy );
+}
+
 // Matriz R de "rotação de um ponto" em relação à origem do sistema de
 // coordenadas e em torno do eixo definido pelo vetor 'axis'. Esta matriz pode
 // ser definida pela fórmula de Rodrigues. Lembre-se que o vetor que define o
