@@ -20,6 +20,7 @@ set(SOURCES
   src/ball.cpp
   src/cuestick.cpp
   src/table.cpp
+  src/collision.cpp
 )
 
 cmake_minimum_required(VERSION 3.5.0)

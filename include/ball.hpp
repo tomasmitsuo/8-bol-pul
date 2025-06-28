@@ -29,11 +29,11 @@ public:
     float x, z;
     float vx, vz;
     float radius;
-    int object_id;
     bool isPocketed;
-
+    
     float rotationAngle;
     glm::vec4 rotationAxis;
+    int object_id;
 
     Ball(ObjectID id, float x, float z, float vx, float vz, float radius);
     Ball(ObjectID id, float x, float z, float radius);
