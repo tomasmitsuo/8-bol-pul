@@ -12,6 +12,9 @@ Ball::Ball(ObjectID id, float x, float z, float radius)
     : x(x), z(z), vx(0.0f), vz(0.0f), radius(radius), isPocketed(false),
       rotationAngle(0.0f), rotationAxis(1.0f, 0.0f, 0.0f, 0.0f), object_id(static_cast<int>(id)) {}
 
+Ball::Ball(ObjectID id, glm::vec2 position, float radius)
+    : Ball(id, position.x, position.y, 0.0f, 0.0f, radius) {}
+
 void Ball::update(float dt) 
 {
     if (isPocketed){
@@ -52,6 +55,13 @@ bool Ball::isMoving() const
 void Ball::pocket()
 {
     isPocketed = true;
+    vx = 0.0f;
+    vz = 0.0f;
+}
+
+void Ball::unpocket()
+{
+    isPocketed = false;
     vx = 0.0f;
     vz = 0.0f;
 }
