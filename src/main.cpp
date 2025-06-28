@@ -47,7 +47,6 @@
 #include "ball.hpp"
 #include "cuestick.hpp"
 #include "camera.hpp"
-#include "collision.hpp"
 
 std::map<std::string, SceneObject> g_VirtualScene;
 std::stack<glm::mat4>  g_MatrixStack;
