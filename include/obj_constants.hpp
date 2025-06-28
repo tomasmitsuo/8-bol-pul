@@ -9,7 +9,7 @@ constexpr float TABLE_CENTER_X = 0.4f;
 constexpr float TABLE_CENTER_Z = 4.0f;
 
 constexpr float BALL_RADIUS = 0.13f;
-constexpr float BALL_DIAMITER = BALL_RADIUS * 2.0f;
+constexpr float BALL_DIAMETER = BALL_RADIUS * 2.0f;
 const float ROW_SPACING = std::sqrt(3.0f) * BALL_RADIUS;
 
 constexpr float TRIANGULE_CENTER_X = TABLE_CENTER_X;
@@ -30,3 +30,8 @@ constexpr float CAMERA_PHI = 0.6f; // Angle phi (relative to the Y axis)
 constexpr float NEAR_PLANE = -0.1f; // Position of the near plane
 constexpr float FAR_PLANE = -100.0f; // Position of the far plane
 constexpr float FIELD_OF_VIEW = 3.141592f / 3.0f;
+
+
+constexpr float CUESTICK_ANGLE = -100.0f * 3.14159265359 / 180.0f;
+constexpr float CUESTICK_HEIGHT = TABLE_HEIGHT - 0.4f;
+constexpr float CUESTICK_DISTANCE = BALL_DIAMETER;

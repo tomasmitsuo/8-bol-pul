@@ -95,9 +95,9 @@ std::vector<Ball> vec_balls = {
     Ball(TRIANGULE_CENTER_X + BALL_RADIUS, TRIANGULE_CENTER_Z - ROW_SPACING, BALL_RADIUS), // 3
 
     // Third row
-    Ball(TRIANGULE_CENTER_X - BALL_DIAMITER, TRIANGULE_CENTER_Z - 2*ROW_SPACING, BALL_RADIUS), // 4
+    Ball(TRIANGULE_CENTER_X - BALL_DIAMETER, TRIANGULE_CENTER_Z - 2*ROW_SPACING, BALL_RADIUS), // 4
     Ball(TRIANGULE_CENTER_X, TRIANGULE_CENTER_Z - 2*ROW_SPACING, BALL_RADIUS), // 5
-    Ball(TRIANGULE_CENTER_X + BALL_DIAMITER, TRIANGULE_CENTER_Z - 2*ROW_SPACING, BALL_RADIUS), // 6
+    Ball(TRIANGULE_CENTER_X + BALL_DIAMETER, TRIANGULE_CENTER_Z - 2*ROW_SPACING, BALL_RADIUS), // 6
 
     // Fourth row
     Ball(TRIANGULE_CENTER_X - 3*BALL_RADIUS, TRIANGULE_CENTER_Z - 3*ROW_SPACING, BALL_RADIUS), // 7
@@ -106,11 +106,11 @@ std::vector<Ball> vec_balls = {
     Ball(TRIANGULE_CENTER_X + 3*BALL_RADIUS, TRIANGULE_CENTER_Z - 3*ROW_SPACING, BALL_RADIUS), // 10
 
     // Fifth row
-    Ball(TRIANGULE_CENTER_X - 2*BALL_DIAMITER, TRIANGULE_CENTER_Z - 4*ROW_SPACING, BALL_RADIUS), // 11
-    Ball(TRIANGULE_CENTER_X - BALL_DIAMITER, TRIANGULE_CENTER_Z - 4*ROW_SPACING, BALL_RADIUS), // 12
+    Ball(TRIANGULE_CENTER_X - 2*BALL_DIAMETER, TRIANGULE_CENTER_Z - 4*ROW_SPACING, BALL_RADIUS), // 11
+    Ball(TRIANGULE_CENTER_X - BALL_DIAMETER, TRIANGULE_CENTER_Z - 4*ROW_SPACING, BALL_RADIUS), // 12
     Ball(TRIANGULE_CENTER_X, TRIANGULE_CENTER_Z - 4*ROW_SPACING, BALL_RADIUS), // 13
-    Ball(TRIANGULE_CENTER_X + BALL_DIAMITER, TRIANGULE_CENTER_Z - 4*ROW_SPACING, BALL_RADIUS), // 14
-    Ball(TRIANGULE_CENTER_X + 2*BALL_DIAMITER, TRIANGULE_CENTER_Z - 4*ROW_SPACING, BALL_RADIUS)  // 15
+    Ball(TRIANGULE_CENTER_X + BALL_DIAMETER, TRIANGULE_CENTER_Z - 4*ROW_SPACING, BALL_RADIUS), // 14
+    Ball(TRIANGULE_CENTER_X + 2*BALL_DIAMETER, TRIANGULE_CENTER_Z - 4*ROW_SPACING, BALL_RADIUS)  // 15
 };
 
 auto& white_ball = vec_balls[0];
@@ -128,7 +128,7 @@ Camera camera(
 
 Cuestick cuestick(
     white_ball.x, 
-    CAMERA_HEIGHT, 
+    CUESTICK_HEIGHT, 
     white_ball.z, 
     g_AngleX, // Ângulo X
     g_AngleY, // Ângulo Y
@@ -295,13 +295,18 @@ int main(int argc, char* argv[])
                               TABLE_WIDTH,
                               TABLE_LENGTH);
 
-        cuestick.setX(white_ball.x);
-        cuestick.setZ(white_ball.z);
-        cuestick.setAngleY(camera.getTheta());
-        cuestick.setAngleX(-camera.getPhi());
-        cuestick.setAngleZ(g_AngleZ);
+        if (camera.isUsingLookAtCamera())
+        {
+            cuestick.setAngleY(camera.getTheta());
+            cuestick.setAngleX(0.0f);
+            cuestick.setAngleZ(0.0f);
 
-        drawInitialScene(vec_balls, cuestick);
+            cuestick.setX(white_ball.x + CUESTICK_DISTANCE * std::sin(cuestick.getAngleY()));
+            cuestick.setY(CUESTICK_HEIGHT);
+            cuestick.setZ(white_ball.z + CUESTICK_DISTANCE * std::cos(cuestick.getAngleY()));
+        }
+
+        drawInitialScene(vec_balls, cuestick, camera, white_ball.isMoving());
 
         TextRendering_ShowEulerAngles(window);
         TextRendering_ShowProjection(window);
