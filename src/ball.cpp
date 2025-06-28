@@ -5,17 +5,21 @@
 
 
 Ball::Ball(ObjectID id, float x, float z, float vx, float vz, float radius)
-    : x(x), z(z), vx(vx), vz(vz), radius(radius),
+    : x(x), z(z), vx(vx), vz(vz), radius(radius), isPocketed(false),
       rotationAngle(0.0f), rotationAxis(1.0f, 0.0f, 0.0f, 0.0f), object_id(static_cast<int>(id)) {}
 
 Ball::Ball(ObjectID id, float x, float z, float radius)
-    : x(x), z(z), vx(0.0f), vz(0.0f), radius(radius),
+    : x(x), z(z), vx(0.0f), vz(0.0f), radius(radius), isPocketed(false),
       rotationAngle(0.0f), rotationAxis(1.0f, 0.0f, 0.0f, 0.0f), object_id(static_cast<int>(id)) {}
 
 constexpr float FRICTION = 0.99f;
 
 void Ball::update(float dt) 
 {
+    if (isPocketed){
+        return;
+    }
+
     if (isMoving()) {
         float speed = getBallSpeed();
         float distanceTraveled = speed * dt;
@@ -56,6 +60,13 @@ void Ball::reflectOnWalls(float table_center_x, float table_center_z, float tabl
 bool Ball::isMoving() const 
 {
     return vx != 0 || vz != 0;
+}
+
+void Ball::pocket()
+{
+    isPocketed = true;
+    vx = 0.0f;
+    vz = 0.0f;
 }
 
 float Ball::getBallSpeed()

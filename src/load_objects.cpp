@@ -54,6 +54,9 @@ void drawInitialScene(const std::vector<Ball>& vec_balls, const Cuestick& cuesti
 {
     for (const auto& ball : vec_balls)
     {
+        if (ball.isPocketed) {
+            continue;
+        }
         glm::mat4 t = Matrix_Translate(ball.x, 1.1f, ball.z);
         glm::mat4 r = Matrix_Rotate(-ball.getRotationAngle(), ball.getRotationAxis());
         glm::mat4 m = t * r;

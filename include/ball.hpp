@@ -12,6 +12,7 @@ public:
     float vx, vz;
     float radius;
     int object_id;
+    bool isPocketed;
 
     float rotationAngle;
     glm::vec4 rotationAxis;
@@ -22,6 +23,7 @@ public:
     void update(float dt);
     void reflectOnWalls(float table_center_x, float table_center_z, float tableWidth, float tableHeight);
     bool isMoving() const;
+    void pocket();
 
     float getBallSpeed();
     float getBallPositionX();

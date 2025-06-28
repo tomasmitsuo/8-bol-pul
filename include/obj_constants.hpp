@@ -7,6 +7,7 @@ constexpr float TABLE_WIDTH = 3.1f*2;
 constexpr float TABLE_LENGTH = 5.5f*2;
 constexpr float TABLE_CENTER_X = 0.4f;
 constexpr float TABLE_CENTER_Z = 4.0f;
+constexpr float HOLE_RADIUS = 0.25f;
 
 
 constexpr float BALL_RADIUS = 0.13f;

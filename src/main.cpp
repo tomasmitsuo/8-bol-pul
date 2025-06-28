@@ -47,6 +47,7 @@
 #include "ball.hpp"
 #include "cuestick.hpp"
 #include "camera.hpp"
+#include "table.hpp"
 
 std::map<std::string, SceneObject> g_VirtualScene;
 std::stack<glm::mat4>  g_MatrixStack;
@@ -133,6 +134,14 @@ Cuestick cuestick(
     g_AngleX, // Ângulo X
     g_AngleY, // Ângulo Y
     g_AngleZ // Ângulo Z
+);
+
+Table pool_table(
+    TABLE_CENTER_X,
+    TABLE_CENTER_Z,
+    TABLE_WIDTH,
+    TABLE_LENGTH,
+    HOLE_RADIUS
 );
 
 // Número de texturas carregadas pela função LoadTextureImage()
@@ -289,9 +298,15 @@ int main(int argc, char* argv[])
 
         for (size_t i = 0; i < vec_balls.size(); ++i) {
             Ball & curr_ball = vec_balls[i];
+            if (curr_ball.isPocketed) {
+                continue;
+            }
 
             for (size_t j = i + 1; j < vec_balls.size(); ++j) {
                 Ball & other_ball = vec_balls[j];
+                if (other_ball.isPocketed) {
+                    continue;
+                }
                 if (curr_ball.isCollidingWith(other_ball)) {
                     curr_ball.handleCollision(other_ball);
                 }
@@ -304,6 +319,8 @@ int main(int argc, char* argv[])
 
             curr_ball.update(g_DeltaTime);
         }
+
+        pool_table.update(vec_balls);
 
         drawInitialScene(vec_balls, cuestick, camera, white_ball.isMoving());
 
