@@ -74,32 +74,9 @@ void Cuestick::update(float deltaTime, Ball& white_ball)
         }
         case CueState::Shooting:
         {
-            // Move the cue stick forward rapidly
-            pullBackDistance -= Cuestick::SHOOT_SPEED * deltaTime;
-
-            // Check for collision
-            if (pullBackDistance <= 0.0f) {
-                std::cout << "Impact!" << std::endl;
-
-                glm::vec2 force_vec = glm::vec2(-dir_x, -dir_z);
-                const glm::vec2 sidestep_vec = glm::vec2(-right_x, -right_z);
-
-                force_vec += sidestep_vec * horizontalOffset * Cuestick::SIDESTEP_FACTOR;
-
-                force_vec = glm::normalize(force_vec);
-
-                // Apply force to the white ball
-                white_ball.vx = force_vec.x * shotPower * Cuestick::SHOT_POWER_MULTIPLIER;
-                white_ball.vz = force_vec.y * shotPower * Cuestick::SHOT_POWER_MULTIPLIER;
-
-                // Reset to Aiming state
-                state = CueState::Aiming;
-                horizontalOffset = 0.0f;
-            }
-
-            // Update position during the shot animation
-            this->x = white_ball.x + dir_x * (Cuestick::DISTANCE + std::max(0.0f, pullBackDistance)) + right_x * horizontalOffset;
-            this->z = white_ball.z + dir_z * (Cuestick::DISTANCE + std::max(0.0f, pullBackDistance)) + right_z * horizontalOffset;
+            const glm::vec2 dir_vec = glm::vec2(dir_x, dir_z);
+            const glm::vec2 sidestep_vec = glm::vec2(-right_x, -right_z);
+            calculateShooting(deltaTime, white_ball, dir_vec, sidestep_vec);
             break;
         }
     }

@@ -48,6 +48,8 @@ public:
 
     void update(float deltaTime, Ball& whiteBall);
 
+    void calculateShooting(float deltaTime, Ball &white_ball, const glm::vec2 &dir_vec, const glm::vec2 &sidestep_vec);
+
     void startCharging();
     void shoot();
 
