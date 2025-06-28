@@ -257,33 +257,27 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
         glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));  
 
-        if (!white_ball.isMoving() && ball_was_shot)
-        {
-            ball_was_shot = false;
-            std::cout << "Ball stopped moving." << std::endl;
-        }
+        if (!white_ball.isMoving()) {
+            // Check for right-click PRESS event
+            if (g_RightMouseButtonPressed && !last_right_button) {
+                cuestick.startCharging();
+            }
 
-        // Only allow a shot if the white ball is not already moving
-        if (!white_ball.isMoving() && !g_RightMouseButtonPressed && last_right_button)
-        {
-            // Apply velocity to the white ball in the camera's direction
-            // The g_CameraViewVector is already normalized and points in the look-at direction
-            std::cout << "Shot with strength: " << shot_strength << std::endl;
-            const glm::vec4 camera_view_vector = camera.getViewVector();
-            white_ball.vx = camera_view_vector.x * shot_strength;
-            white_ball.vz = camera_view_vector.z * shot_strength;
-            shot_strength = 0.0f; // Reset shot strength after applying it
-            ball_was_shot = true;
+            // Check for right-click RELEASE event
+            if (!g_RightMouseButtonPressed && last_right_button) {
+                cuestick.shoot();
+            }
+
+            if (cuestick.isAiming() && camera.isUsingLookAtCamera()) {
+                cuestick.setAngleY(camera.getTheta());
+                cuestick.setAngleX(0.0f);
+                cuestick.setAngleZ(0.0f);
+            }
         }
-        last_right_button = g_RightMouseButtonPressed;
         
-        if (g_RightMouseButtonPressed && !white_ball.isMoving())
-        {
-            const float current_increment = STRENGTH_INCREMENT * g_DeltaTime;
-            const bool using_look_at_camera = camera.isUsingLookAtCamera();
-            shot_strength = std::min(shot_strength + current_increment, using_look_at_camera ? MAX_SHOT_STRENGTH : 0.0f);
-            std::cout << "Shot strength: " << shot_strength << std::endl;
-        }
+        cuestick.update(g_DeltaTime, white_ball);
+
+        last_right_button = g_RightMouseButtonPressed;
 
         for (auto& ball : vec_balls)
         {
@@ -294,17 +288,6 @@ int main(int argc, char* argv[])
                               std::make_pair(TABLE_CENTER_X, TABLE_CENTER_Z),
                               TABLE_WIDTH,
                               TABLE_LENGTH);
-
-        if (camera.isUsingLookAtCamera())
-        {
-            cuestick.setAngleY(camera.getTheta());
-            cuestick.setAngleX(0.0f);
-            cuestick.setAngleZ(0.0f);
-
-            cuestick.setX(white_ball.x + CUESTICK_DISTANCE * std::sin(cuestick.getAngleY()));
-            cuestick.setY(CUESTICK_HEIGHT);
-            cuestick.setZ(white_ball.z + CUESTICK_DISTANCE * std::cos(cuestick.getAngleY()));
-        }
 
         drawInitialScene(vec_balls, cuestick, camera, white_ball.isMoving());
 
