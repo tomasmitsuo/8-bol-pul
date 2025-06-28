@@ -289,15 +289,23 @@ int main(int argc, char* argv[])
 
         last_right_button = g_RightMouseButtonPressed;
 
-        for (auto& ball : vec_balls)
-        {
-            ball.update(g_DeltaTime);
-        }
+        for (size_t i = 0; i < vec_balls.size(); ++i) {
+            Ball & curr_ball = vec_balls[i];
 
-        handle_ball_collisions(vec_balls,
-                              std::make_pair(TABLE_CENTER_X, TABLE_CENTER_Z),
-                              TABLE_WIDTH,
-                              TABLE_LENGTH);
+            for (size_t j = i + 1; j < vec_balls.size(); ++j) {
+                Ball & other_ball = vec_balls[j];
+                if (curr_ball.isCollidingWith(other_ball)) {
+                    curr_ball.handleCollision(other_ball);
+                }
+            }
+
+            if (curr_ball.isMoving())
+            {
+                curr_ball.reflectOnWalls(TABLE_CENTER_X, TABLE_CENTER_Z, TABLE_WIDTH, TABLE_LENGTH);
+            }
+
+            curr_ball.update(g_DeltaTime);
+        }
 
         drawInitialScene(vec_balls, cuestick, camera, white_ball.isMoving());
 

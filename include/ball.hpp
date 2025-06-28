@@ -26,4 +26,7 @@ public:
 
     float getRotationAngle() const;
     glm::vec4 getRotationAxis() const;
+
+    bool isCollidingWith(const Ball& other) const;
+    void handleCollision(Ball& other);
 };
