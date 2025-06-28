@@ -9,6 +9,7 @@
 #include <glm/glm.hpp>
 
 
+//! Start of Sphere-Wall(Plane) collision
 void Ball::reflectOnWalls(float table_center_x, float table_center_z, float tableWidth, float tableHeight)
 {
     if (x - radius < table_center_x - tableWidth / 2 || x + radius > table_center_x + tableWidth / 2) {
@@ -18,7 +19,9 @@ void Ball::reflectOnWalls(float table_center_x, float table_center_z, float tabl
         vz *= -FRICTION;
     }
 }
+//! End of Sphere-Wall(Plane) collision
 
+//! Start of Sphere-Sphere collision
 bool Ball::isCollidingWith(const Ball& other) const
 {
     float dx = x - other.x;
@@ -65,6 +68,7 @@ void Ball::handleCollision(Ball& other)
     other.vx = (v2n_final * nx) + (v2t * tx);
     other.vz = (v2n_final * nz) + (v2t * tz);
 }
+//! End of Sphere-Sphere collision
 
 void Cuestick::calculateShooting(float deltaTime, Ball& white_ball,const glm::vec2& dir_vec, const glm::vec2& sidestep_vec)
 {
@@ -95,6 +99,7 @@ void Cuestick::calculateShooting(float deltaTime, Ball& white_ball,const glm::ve
     this->z = white_ball.z + dir_vec.y * (Cuestick::DISTANCE + std::max(0.0f, pullBackDistance)) - sidestep_vec.y * horizontalOffset;
 }
 
+//! Start of Sphere-Circle collision
 void Table::update(std::vector<Ball>& balls) {
     for (size_t i = 0; i < balls.size(); ++i) {
         Ball& ball = balls[i];
@@ -125,3 +130,4 @@ void Table::update(std::vector<Ball>& balls) {
         }
     }
 }
+//! End of Sphere-Circle collision
