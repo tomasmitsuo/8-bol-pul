@@ -82,3 +82,50 @@ glm::vec4 Ball::getRotationAxis() const
 {
     return rotationAxis;
 }
+
+bool Ball::isCollidingWith(const Ball& other) const
+{
+    float dx = x - other.x;
+    float dz = z - other.z;
+    float distance_squared = dx * dx + dz * dz;
+    float radius_sum = radius + other.radius;
+    return distance_squared < (radius_sum * radius_sum);
+}
+
+void Ball::handleCollision(Ball& other)
+{
+    float dx = other.x - x;
+    float dz = other.z - z;
+
+    float distance = std::sqrt(dx * dx + dz * dz);
+    if (distance == 0.0f) {
+        dx = 0.01f;
+        distance = 0.01f;
+    }
+
+    const float nx = dx / distance;
+    const float nz = dz / distance;
+
+    const float overlap = (radius + other.radius) - distance;
+
+    x -= overlap * nx * 0.5f;
+    z -= overlap * nz * 0.5f;
+    other.x += overlap * nx * 0.5f;
+    other.z += overlap * nz * 0.5f;
+
+    const float tx = -nz;
+    const float tz = nx;
+
+    const float v1n = vx * nx + vz * nz;
+    const float v1t = vx * tx + vz * tz;
+    const float v2n = other.vx * nx + other.vz * nz;
+    const float v2t = other.vx * tx + other.vz * tz;
+
+    const float v1n_final = v2n;
+    const float v2n_final = v1n;
+
+    vx = (v1n_final * nx) + (v1t * tx);
+    vz = (v1n_final * nz) + (v1t * tz);
+    other.vx = (v2n_final * nx) + (v2t * tx);
+    other.vz = (v2n_final * nz) + (v2t * tz);
+}
