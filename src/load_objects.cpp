@@ -81,7 +81,7 @@ void drawInitialScene(const std::vector<Ball>& vec_balls, const Cuestick& cuesti
     glUniform1i(g_object_id_uniform, BALL3);
     DrawVirtualObject("the_pooltable");
 
-    if (camera.isUsingLookAtCamera() && !isWhiteBallMoving)
+    if (!isWhiteBallMoving)
     {
         const glm::mat4 t = Matrix_Translate(cuestick.getX(), cuestick.getY(), cuestick.getZ());
 
