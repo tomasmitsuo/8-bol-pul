@@ -133,6 +133,8 @@ bool g_goBack = false;
 bool g_goRight = false;
 bool g_goLeft = false;
 
+bool g_ResetGame = false;
+
 int main(int argc, char* argv[])
 {   
     // Inicializamos a biblioteca GLFW, utilizada para criar uma janela do
@@ -235,6 +237,14 @@ int main(int argc, char* argv[])
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glUseProgram(g_GpuProgramID);
+
+        if (g_ResetGame || g_MiddleMouseButtonPressed) {
+            g_GameBalls.reset();
+            white_ball = g_GameBalls.getWhiteBall();
+            vec_balls = g_GameBalls.getBalls();
+            camera.setUsingPerspectiveProjection(g_UsePerspectiveProjection);
+            camera.setCameraType(true);
+        }
 
         camera.updatePosition(g_DeltaTime, g_goFront, g_goBack, g_goRight, g_goLeft);
         const glm::mat4 view = camera.getViewMatrix();

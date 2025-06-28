@@ -38,6 +38,8 @@ extern bool g_goBack;
 extern bool g_goRight;
 extern bool g_goLeft;
 
+extern bool g_ResetGame;
+
 extern Camera camera;
 
 void FramebufferSizeCallback(GLFWwindow* window, int width, int height)
@@ -228,6 +230,8 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
     g_goBack = glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS; // Back
     g_goRight = glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS; // Right
     g_goLeft = glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS; // Left
+
+    g_ResetGame = glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS; // Reset game
 
     /*
     // ======================
