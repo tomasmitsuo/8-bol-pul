@@ -23,6 +23,7 @@ private:
     CueState state;
     float pullBackDistance;
     float shotPower;
+    float horizontalOffset;
 
 public:
     Cuestick(float x, float y, float z, float angleX, float angleY, float angleZ);
@@ -31,6 +32,8 @@ public:
 
     void startCharging();
     void shoot();
+
+    void addHorizontalOffset(float offset);
 
     float getX() const;
     float getZ() const;

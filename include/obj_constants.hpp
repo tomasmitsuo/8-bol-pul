@@ -40,3 +40,7 @@ constexpr float CUESTICK_CHARGE_SPEED = 5.0f;
 constexpr float MAX_PULL_BACK = 3.0f;
 constexpr float CUESTICK_SHOOT_SPEED = 25.0f;
 constexpr float SHOT_POWER_MULTIPLIER = 5.0f;
+
+constexpr float HORIZONTAL_OFFSET_SPEED = 0.25f;
+constexpr float MAX_HORIZONTAL_OFFSET = 0.1f;
+constexpr float SIDESTEP_FACTOR = 1.9f;
