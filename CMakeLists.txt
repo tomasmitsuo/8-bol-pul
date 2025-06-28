@@ -19,6 +19,7 @@ set(SOURCES
   src/load_objects.cpp
   src/ball.cpp
   src/cuestick.cpp
+  src/table.cpp
 )
 
 cmake_minimum_required(VERSION 3.5.0)
