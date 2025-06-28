@@ -50,7 +50,7 @@ void loadAllObjects(void)
 
 
 
-void drawInitialScene(const std::vector<Ball>& vec_balls, const Cuestick& cuestick)
+void drawInitialScene(const std::vector<Ball>& vec_balls, const Cuestick& cuestick, const Camera& camera, bool isWhiteBallMoving)
 {
     enum enum_name {
             BALL0,
@@ -81,11 +81,18 @@ void drawInitialScene(const std::vector<Ball>& vec_balls, const Cuestick& cuesti
     glUniform1i(g_object_id_uniform, BALL3);
     DrawVirtualObject("the_pooltable");
 
-    glm::mat4 model_cuestick = Matrix_Translate(cuestick.getX(), cuestick.getY(), cuestick.getZ()) 
-        * Matrix_Rotate_Y(cuestick.getAngleY())
-        * Matrix_Rotate_X(cuestick.getAngleX())
-        * Matrix_Rotate_Z(cuestick.getAngleZ());
-    glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model_cuestick));
-    glUniform1i(g_object_id_uniform, CUESTICK);
-    DrawVirtualObject("the_cuestick");
+    if (camera.isUsingLookAtCamera() && !isWhiteBallMoving)
+    {
+        const glm::mat4 t = Matrix_Translate(cuestick.getX(), cuestick.getY(), cuestick.getZ());
+
+        const glm::mat4 r_yaw = Matrix_Rotate_Y(cuestick.getAngleY());
+        const glm::mat4 r_pitch = Matrix_Rotate_X(cuestick.getAngleX());
+
+        const glm::mat4 make_cue_horizontal = Matrix_Rotate_X(CUESTICK_ANGLE);
+
+        glm::mat4 model_cuestick = t * r_yaw * r_pitch * make_cue_horizontal;
+        glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model_cuestick));
+        glUniform1i(g_object_id_uniform, CUESTICK);
+        DrawVirtualObject("the_cuestick");
+    }
 }
