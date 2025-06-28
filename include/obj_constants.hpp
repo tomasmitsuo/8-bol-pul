@@ -3,7 +3,7 @@
 #include <cmath>
 
 constexpr float TABLE_HEIGHT = 1.5f;
-constexpr float TABLE_WIDTH = 3.5f*2;
+constexpr float TABLE_WIDTH = 3.1f*2;
 constexpr float TABLE_LENGTH = 5.5f*2;
 constexpr float TABLE_CENTER_X = 0.4f;
 constexpr float TABLE_CENTER_Z = 4.0f;
