@@ -1,11 +1,12 @@
 #include "cuestick.hpp"
 
-#include "obj_constants.hpp"
-
 #include <glm/vec2.hpp>
 #include <glm/glm.hpp>
 
 #include <iostream>
+
+constexpr float Cuestick::MAX_PULL_BACK;
+constexpr float Cuestick::MAX_HORIZONTAL_OFFSET;
 
 Cuestick::Cuestick(ObjectID id, float x, float y, float z, float angleX, float angleY, float angleZ)
     :
@@ -41,7 +42,7 @@ void Cuestick::shoot() {
 void Cuestick::addHorizontalOffset(float offset) {
     horizontalOffset += offset;
     // There is not std::clamp in the C++ version currently used
-    horizontalOffset = std::max(-MAX_HORIZONTAL_OFFSET, std::min(MAX_HORIZONTAL_OFFSET, horizontalOffset));
+    horizontalOffset = std::max(-Cuestick::MAX_HORIZONTAL_OFFSET, std::min(Cuestick::MAX_HORIZONTAL_OFFSET, horizontalOffset));
 }
 
 void Cuestick::update(float deltaTime, Ball& white_ball)
@@ -57,24 +58,24 @@ void Cuestick::update(float deltaTime, Ball& white_ball)
         {
             // In Aiming state, the cue just follows the white ball
             pullBackDistance = 0.0f;
-            this->x = white_ball.x + dir_x * CUESTICK_DISTANCE + right_x * horizontalOffset;
-            this->y = CUESTICK_HEIGHT;
-            this->z = white_ball.z + dir_z * CUESTICK_DISTANCE + right_z * horizontalOffset;
+            this->x = white_ball.x + dir_x * Cuestick::DISTANCE + right_x * horizontalOffset;
+            this->y = Cuestick::HEIGHT;
+            this->z = white_ball.z + dir_z * Cuestick::DISTANCE + right_z * horizontalOffset;
             break;
         }
 
         case CueState::Charging:
         {
             // Pull the cue stick back
-            pullBackDistance = std::min(pullBackDistance + CUESTICK_CHARGE_SPEED * deltaTime, MAX_PULL_BACK);
-            this->x = white_ball.x + dir_x * (CUESTICK_DISTANCE + pullBackDistance) + right_x * horizontalOffset;
-            this->z = white_ball.z + dir_z * (CUESTICK_DISTANCE + pullBackDistance) + right_z * horizontalOffset;
+            pullBackDistance = std::min(pullBackDistance + Cuestick::CHARGE_SPEED * deltaTime, Cuestick::MAX_PULL_BACK);
+            this->x = white_ball.x + dir_x * (Cuestick::DISTANCE + pullBackDistance) + right_x * horizontalOffset;
+            this->z = white_ball.z + dir_z * (Cuestick::DISTANCE + pullBackDistance) + right_z * horizontalOffset;
             break;
         }
         case CueState::Shooting:
         {
             // Move the cue stick forward rapidly
-            pullBackDistance -= CUESTICK_SHOOT_SPEED * deltaTime;
+            pullBackDistance -= Cuestick::SHOOT_SPEED * deltaTime;
 
             // Check for collision
             if (pullBackDistance <= 0.0f) {
@@ -83,13 +84,13 @@ void Cuestick::update(float deltaTime, Ball& white_ball)
                 glm::vec2 force_vec = glm::vec2(-dir_x, -dir_z);
                 const glm::vec2 sidestep_vec = glm::vec2(-right_x, -right_z);
 
-                force_vec += sidestep_vec * horizontalOffset * SIDESTEP_FACTOR;
+                force_vec += sidestep_vec * horizontalOffset * Cuestick::SIDESTEP_FACTOR;
 
                 force_vec = glm::normalize(force_vec);
 
                 // Apply force to the white ball
-                white_ball.vx = force_vec.x * shotPower * SHOT_POWER_MULTIPLIER;
-                white_ball.vz = force_vec.y * shotPower * SHOT_POWER_MULTIPLIER;
+                white_ball.vx = force_vec.x * shotPower * Cuestick::SHOT_POWER_MULTIPLIER;
+                white_ball.vz = force_vec.y * shotPower * Cuestick::SHOT_POWER_MULTIPLIER;
 
                 // Reset to Aiming state
                 state = CueState::Aiming;
@@ -97,8 +98,8 @@ void Cuestick::update(float deltaTime, Ball& white_ball)
             }
 
             // Update position during the shot animation
-            this->x = white_ball.x + dir_x * (CUESTICK_DISTANCE + std::max(0.0f, pullBackDistance)) + right_x * horizontalOffset;
-            this->z = white_ball.z + dir_z * (CUESTICK_DISTANCE + std::max(0.0f, pullBackDistance)) + right_z * horizontalOffset;
+            this->x = white_ball.x + dir_x * (Cuestick::DISTANCE + std::max(0.0f, pullBackDistance)) + right_x * horizontalOffset;
+            this->z = white_ball.z + dir_z * (Cuestick::DISTANCE + std::max(0.0f, pullBackDistance)) + right_z * horizontalOffset;
             break;
         }
     }

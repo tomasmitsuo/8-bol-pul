@@ -1,5 +1,7 @@
 #include "table.hpp"
-#include "obj_constants.hpp"
+
+#include "ball.hpp"
+
 #include <cmath>
 #include <iostream>
 
@@ -42,8 +44,8 @@ void Table::update(std::vector<Ball>& balls) {
             if (distanceSquared < (this->holeRadius * this->holeRadius)) {
                 if (i == 0) {
                     std::cout << "White ball scratched!" << std::endl;
-                    ball.x = WHITE_BALL_X;
-                    ball.z = WHITE_BALL_Z;
+                    ball.x = Ball::WHITE_BALL_X;
+                    ball.z = Ball::WHITE_BALL_Z;
                     ball.vx = 0.0f;
                     ball.vz = 0.0f;
                 } else {

@@ -1,10 +1,24 @@
 #pragma once
 
+#include "table.hpp"
 #include "ball.hpp"
 
 enum class ObjectID : int;
 
 class Cuestick {
+public:
+    static constexpr float ANGLE = -100.0f * 3.14159265359 / 180.0f;
+    static constexpr float HEIGHT = Table::HEIGHT - 0.4f;
+    static constexpr float DISTANCE = Ball::DIAMETER;
+
+    static constexpr float CHARGE_SPEED = 5.0f;
+    static constexpr float MAX_PULL_BACK = 3.0f;
+    static constexpr float SHOOT_SPEED = 25.0f;
+    static constexpr float SHOT_POWER_MULTIPLIER = 5.0f;
+
+    static constexpr float HORIZONTAL_OFFSET_SPEED = 0.25f;
+    static constexpr float MAX_HORIZONTAL_OFFSET = 0.1f;
+    static constexpr float SIDESTEP_FACTOR = 1.9f;
 
 public:
     enum class CueState

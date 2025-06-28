@@ -44,10 +44,10 @@
 // CODIGO UTIL
 
 #include "load_objects.hpp"
-#include "ball.hpp"
-#include "cuestick.hpp"
-#include "camera.hpp"
 #include "table.hpp"
+#include "ball.hpp"
+#include "camera.hpp"
+#include "cuestick.hpp"
 
 std::map<std::string, SceneObject> g_VirtualScene;
 std::stack<glm::mat4>  g_MatrixStack;
@@ -81,55 +81,54 @@ GLint g_object_id_uniform;
 GLint g_bbox_min_uniform;
 GLint g_bbox_max_uniform;
 
-#include "obj_constants.hpp"
-
 // DECLARAÇÃO DAS BOLAS
 std::vector<Ball> vec_balls = {
-    Ball(ObjectID::WHITE_BALL, WHITE_BALL_X, WHITE_BALL_Z, BALL_RADIUS),
+    Ball(ObjectID::WHITE_BALL, Ball::WHITE_BALL_X, Ball::WHITE_BALL_Z, Ball::RADIUS),
 
     // First row
-    Ball(ObjectID::BALL1, TRIANGULE_CENTER_X, TRIANGULE_CENTER_Z, BALL_RADIUS),
+    Ball(ObjectID::BALL1, Ball::TRIANGLE_CENTER_X, Ball::TRIANGLE_CENTER_Z, Ball::RADIUS),
 
     // Second row
-    Ball(ObjectID::BALL2, TRIANGULE_CENTER_X - BALL_RADIUS, TRIANGULE_CENTER_Z - ROW_SPACING, BALL_RADIUS),
-    Ball(ObjectID::BALL3, TRIANGULE_CENTER_X + BALL_RADIUS, TRIANGULE_CENTER_Z - ROW_SPACING, BALL_RADIUS),
+    Ball(ObjectID::BALL2, Ball::TRIANGLE_CENTER_X - Ball::RADIUS, Ball::TRIANGLE_CENTER_Z - Ball::ROW_SPACING, Ball::RADIUS),
+    Ball(ObjectID::BALL3, Ball::TRIANGLE_CENTER_X + Ball::RADIUS, Ball::TRIANGLE_CENTER_Z - Ball::ROW_SPACING, Ball::RADIUS),
 
     // Third row
-    Ball(ObjectID::BALL4, TRIANGULE_CENTER_X - BALL_DIAMETER, TRIANGULE_CENTER_Z - 2*ROW_SPACING, BALL_RADIUS),
-    Ball(ObjectID::BALL5, TRIANGULE_CENTER_X, TRIANGULE_CENTER_Z - 2*ROW_SPACING, BALL_RADIUS),
-    Ball(ObjectID::BALL6, TRIANGULE_CENTER_X + BALL_DIAMETER, TRIANGULE_CENTER_Z - 2*ROW_SPACING, BALL_RADIUS),
+    Ball(ObjectID::BALL4, Ball::TRIANGLE_CENTER_X - Ball::DIAMETER, Ball::TRIANGLE_CENTER_Z - 2*Ball::ROW_SPACING, Ball::RADIUS),
+    Ball(ObjectID::BALL5, Ball::TRIANGLE_CENTER_X, Ball::TRIANGLE_CENTER_Z - 2*Ball::ROW_SPACING, Ball::RADIUS),
+    Ball(ObjectID::BALL6, Ball::TRIANGLE_CENTER_X + Ball::DIAMETER, Ball::TRIANGLE_CENTER_Z - 2*Ball::ROW_SPACING, Ball::RADIUS),
 
     // Fourth row
-    Ball(ObjectID::BALL7, TRIANGULE_CENTER_X - 3*BALL_RADIUS, TRIANGULE_CENTER_Z - 3*ROW_SPACING, BALL_RADIUS),
-    Ball(ObjectID::BALL8, TRIANGULE_CENTER_X - BALL_RADIUS, TRIANGULE_CENTER_Z - 3*ROW_SPACING, BALL_RADIUS),
-    Ball(ObjectID::BALL9, TRIANGULE_CENTER_X + BALL_RADIUS, TRIANGULE_CENTER_Z - 3*ROW_SPACING, BALL_RADIUS),
-    Ball(ObjectID::BALL10, TRIANGULE_CENTER_X + 3*BALL_RADIUS, TRIANGULE_CENTER_Z - 3*ROW_SPACING, BALL_RADIUS),
+    Ball(ObjectID::BALL7, Ball::TRIANGLE_CENTER_X - 3*Ball::RADIUS, Ball::TRIANGLE_CENTER_Z - 3*Ball::ROW_SPACING, Ball::RADIUS),
+    Ball(ObjectID::BALL8, Ball::TRIANGLE_CENTER_X - Ball::RADIUS, Ball::TRIANGLE_CENTER_Z - 3*Ball::ROW_SPACING, Ball::RADIUS),
+    Ball(ObjectID::BALL9, Ball::TRIANGLE_CENTER_X + Ball::RADIUS, Ball::TRIANGLE_CENTER_Z - 3*Ball::ROW_SPACING, Ball::RADIUS),
+    Ball(ObjectID::BALL10, Ball::TRIANGLE_CENTER_X + 3*Ball::RADIUS, Ball::TRIANGLE_CENTER_Z - 3*Ball::ROW_SPACING, Ball::RADIUS),
 
     // Fifth row
-    Ball(ObjectID::BALL11, TRIANGULE_CENTER_X - 2*BALL_DIAMETER, TRIANGULE_CENTER_Z - 4*ROW_SPACING, BALL_RADIUS),
-    Ball(ObjectID::BALL12, TRIANGULE_CENTER_X - BALL_DIAMETER, TRIANGULE_CENTER_Z - 4*ROW_SPACING, BALL_RADIUS),
-    Ball(ObjectID::BALL13, TRIANGULE_CENTER_X, TRIANGULE_CENTER_Z - 4*ROW_SPACING, BALL_RADIUS),
-    Ball(ObjectID::BALL14, TRIANGULE_CENTER_X + BALL_DIAMETER, TRIANGULE_CENTER_Z - 4*ROW_SPACING, BALL_RADIUS),
-    Ball(ObjectID::BALL15, TRIANGULE_CENTER_X + 2*BALL_DIAMETER, TRIANGULE_CENTER_Z - 4*ROW_SPACING, BALL_RADIUS)
+    Ball(ObjectID::BALL11, Ball::TRIANGLE_CENTER_X - 2*Ball::DIAMETER, Ball::TRIANGLE_CENTER_Z - 4*Ball::ROW_SPACING, Ball::RADIUS),
+    Ball(ObjectID::BALL12, Ball::TRIANGLE_CENTER_X - Ball::DIAMETER, Ball::TRIANGLE_CENTER_Z - 4*Ball::ROW_SPACING, Ball::RADIUS),
+    Ball(ObjectID::BALL13, Ball::TRIANGLE_CENTER_X, Ball::TRIANGLE_CENTER_Z - 4*Ball::ROW_SPACING, Ball::RADIUS),
+    Ball(ObjectID::BALL14, Ball::TRIANGLE_CENTER_X + Ball::DIAMETER, Ball::TRIANGLE_CENTER_Z - 4*Ball::ROW_SPACING, Ball::RADIUS),
+    Ball(ObjectID::BALL15, Ball::TRIANGLE_CENTER_X + 2*Ball::DIAMETER, Ball::TRIANGLE_CENTER_Z - 4*Ball::ROW_SPACING, Ball::RADIUS)
 };
 
-auto& white_ball = vec_balls[0];
+Ball& white_ball = vec_balls[0];
+
 Camera camera(
     white_ball, 
-    CAMERA_HEIGHT, // Altura da câmera
-    CAMERA_SPEED, // Velocidade da câmera
-    CAMERA_DISTANCE, // Distância da câmera
-    CAMERA_THETA, // Ângulo theta (no plano ZX)
-    CAMERA_PHI, // Ângulo phi (em relação ao eixo Y)
-    NEAR_PLANE, // Posição do near plane
-    FAR_PLANE, // Posição do far plane
-    FIELD_OF_VIEW // Campo de visão (field of view) em radianos
+    Camera::HEIGHT, // Altura da câmera
+    Camera::SPEED, // Velocidade da câmera
+    Camera::DISTANCE, // Distância da câmera
+    Camera::THETA, // Ângulo theta (no plano ZX)
+    Camera::PHI, // Ângulo phi (em relação ao eixo Y)
+    Camera::NEAR_PLANE, // Posição do near plane
+    Camera::FAR_PLANE, // Posição do far plane
+    Camera::FIELD_OF_VIEW // Campo de visão (field of view) em radianos
 );
 
 Cuestick cuestick(
     ObjectID::CUESTICK,
     white_ball.x, 
-    CUESTICK_HEIGHT, 
+    Cuestick::HEIGHT, 
     white_ball.z, 
     g_AngleX, // Ângulo X
     g_AngleY, // Ângulo Y
@@ -137,11 +136,11 @@ Cuestick cuestick(
 );
 
 Table pool_table(
-    TABLE_CENTER_X,
-    TABLE_CENTER_Z,
-    TABLE_WIDTH,
-    TABLE_LENGTH,
-    HOLE_RADIUS
+    Table::CENTER_X,
+    Table::CENTER_Z,
+    Table::WIDTH,
+    Table::LENGTH,
+    Table::HOLE_RADIUS
 );
 
 // Número de texturas carregadas pela função LoadTextureImage()
@@ -282,12 +281,12 @@ int main(int argc, char* argv[])
 
                 if (g_goLeft)
                 {
-                    cuestick.addHorizontalOffset(HORIZONTAL_OFFSET_SPEED * g_DeltaTime);
+                    cuestick.addHorizontalOffset(Cuestick::HORIZONTAL_OFFSET_SPEED * g_DeltaTime);
                 }
 
                 if (g_goRight)
                 {
-                    cuestick.addHorizontalOffset(-HORIZONTAL_OFFSET_SPEED * g_DeltaTime);
+                    cuestick.addHorizontalOffset(-Cuestick::HORIZONTAL_OFFSET_SPEED * g_DeltaTime);
                 }
             }
         }
@@ -314,7 +313,7 @@ int main(int argc, char* argv[])
 
             if (curr_ball.isMoving())
             {
-                curr_ball.reflectOnWalls(TABLE_CENTER_X, TABLE_CENTER_Z, TABLE_WIDTH, TABLE_LENGTH);
+                curr_ball.reflectOnWalls(Table::CENTER_X, Table::CENTER_Z, Table::WIDTH, Table::LENGTH);
             }
 
             curr_ball.update(g_DeltaTime);

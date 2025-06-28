@@ -1,12 +1,30 @@
 #pragma once
 
 #include <string>
+#include <cmath>
 
 #include <glm/vec4.hpp>
+
+#include "table.hpp"
 
 enum class ObjectID : int;
 
 class Ball {
+public:
+    static constexpr float RADIUS = 0.13f;
+    static constexpr float DIAMETER = RADIUS * 2.0f;
+    static constexpr float ROW_SPACING = 1.7320508076f * RADIUS; // std::sqrt(3.0f) * RADIUS;
+
+    static constexpr float TRIANGLE_CENTER_X = Table::CENTER_X;
+    static constexpr float TRIANGLE_OFFSET_Z = 0.8f;
+    static constexpr float TRIANGLE_CENTER_Z = Table::CENTER_Z - Table::LENGTH / 3 + TRIANGLE_OFFSET_Z;
+
+    static constexpr float WHITE_BALL_X = TRIANGLE_CENTER_X;
+    static constexpr float WHITE_BALL_Z = Table::CENTER_Z + Table::LENGTH / 3 - TRIANGLE_OFFSET_Z;
+
+    static constexpr float FRICTION = 0.99f;
+    static constexpr float STABLE_ROTATION_THRESHOLD = 0.05f;
+
 public:
     float x, z;
     float vx, vz;

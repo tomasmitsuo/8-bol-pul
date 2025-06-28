@@ -4,9 +4,20 @@
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
 
+#include "table.hpp"
 #include "ball.hpp"
 
 class Camera {
+public:
+    static constexpr float SPEED = 1.0f; // Speed of the camera movement
+    static constexpr float HEIGHT = Table::HEIGHT + 0.1f; // Height of the camera
+    static constexpr float DISTANCE = 3.5f; // Distance of the camera from the target ball
+    static constexpr float THETA = 0.0f; // Angle theta (in the ZX plane)
+    static constexpr float PHI = 0.6f; // Angle phi (relative to the Y axis)
+    static constexpr float NEAR_PLANE = -0.1f; // Position of the near plane
+    static constexpr float FAR_PLANE = -100.0f; // Position of the far plane
+    static constexpr float FIELD_OF_VIEW = 3.141592f / 3.0f; // Field of view in radians
+
 private:
     glm::vec4 position;
     glm::vec4 lookAt;
