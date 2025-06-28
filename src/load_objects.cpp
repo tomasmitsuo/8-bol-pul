@@ -1,7 +1,6 @@
 #include "scene.hpp"
 #include "shaders.hpp"
 #include "load_objects.hpp"
-#include "obj_constants.hpp"
 
 #include "matrices.h"
 #include "ball.hpp"
@@ -67,7 +66,7 @@ void drawInitialScene(const std::vector<Ball>& vec_balls, const Cuestick& cuesti
 
 
     // Desenhamos a mesa
-    glm::mat4 model_table = Matrix_Translate(TABLE_CENTER_X, 0.0f, TABLE_CENTER_Z);
+    glm::mat4 model_table = Matrix_Translate(Table::CENTER_X, 0.0f, Table::CENTER_Z);
     glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model_table));
     glUniform1i(g_object_id_uniform, static_cast<int>(ObjectID::BALL3));
     DrawVirtualObject("the_pooltable");
@@ -79,7 +78,7 @@ void drawInitialScene(const std::vector<Ball>& vec_balls, const Cuestick& cuesti
         const glm::mat4 r_yaw = Matrix_Rotate_Y(cuestick.getAngleY());
         const glm::mat4 r_pitch = Matrix_Rotate_X(cuestick.getAngleX());
 
-        const glm::mat4 make_cue_horizontal = Matrix_Rotate_X(CUESTICK_ANGLE);
+        const glm::mat4 make_cue_horizontal = Matrix_Rotate_X(Cuestick::ANGLE);
 
         glm::mat4 model_cuestick = t * r_yaw * r_pitch * make_cue_horizontal;
         glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model_cuestick));

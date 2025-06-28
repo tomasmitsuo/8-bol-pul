@@ -12,8 +12,6 @@ Ball::Ball(ObjectID id, float x, float z, float radius)
     : x(x), z(z), vx(0.0f), vz(0.0f), radius(radius), isPocketed(false),
       rotationAngle(0.0f), rotationAxis(1.0f, 0.0f, 0.0f, 0.0f), object_id(static_cast<int>(id)) {}
 
-constexpr float FRICTION = 0.99f;
-
 void Ball::update(float dt) 
 {
     if (isPocketed){
@@ -27,9 +25,7 @@ void Ball::update(float dt)
 
         glm::vec4 velocityVector(vx, 0.0f, vz, 0.0f);
         
-        constexpr float STABLE_ROTATION_THRESHOLD = 0.05f;
-
-        if (speed > STABLE_ROTATION_THRESHOLD) {
+        if (speed > Ball::STABLE_ROTATION_THRESHOLD) {
             const glm::vec4 rotationVector = glm::vec4(-vz, 0.0f, vx, 0.0f);
             rotationAxis = rotationVector / norm(rotationVector);
         }
@@ -40,8 +36,8 @@ void Ball::update(float dt)
     x += vx * dt;
     z += vz * dt;
 
-    vx *= FRICTION;
-    vz *= FRICTION;
+    vx *= Ball::FRICTION;
+    vz *= Ball::FRICTION;
 
     if (std::abs(vx) < 0.01f) vx = 0;
     if (std::abs(vz) < 0.01f) vz = 0;
