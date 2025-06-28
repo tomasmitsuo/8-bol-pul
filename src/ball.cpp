@@ -4,13 +4,13 @@
 #include "matrices.h"
 
 
-Ball::Ball(float x, float z, float vx, float vz, float radius)
+Ball::Ball(ObjectID id, float x, float z, float vx, float vz, float radius)
     : x(x), z(z), vx(vx), vz(vz), radius(radius),
-      rotationAngle(0.0f), rotationAxis(1.0f, 0.0f, 0.0f, 0.0f) {}
+      rotationAngle(0.0f), rotationAxis(1.0f, 0.0f, 0.0f, 0.0f), object_id(static_cast<int>(id)) {}
 
-Ball::Ball(float x, float z, float radius)
+Ball::Ball(ObjectID id, float x, float z, float radius)
     : x(x), z(z), vx(0.0f), vz(0.0f), radius(radius),
-      rotationAngle(0.0f), rotationAxis(1.0f, 0.0f, 0.0f, 0.0f) {}
+      rotationAngle(0.0f), rotationAxis(1.0f, 0.0f, 0.0f, 0.0f), object_id(static_cast<int>(id)) {}
 
 constexpr float FRICTION = 0.99f;
 
@@ -128,4 +128,9 @@ void Ball::handleCollision(Ball& other)
     vz = (v1n_final * nz) + (v1t * tz);
     other.vx = (v2n_final * nx) + (v2t * tx);
     other.vz = (v2n_final * nz) + (v2t * tz);
+}
+
+int Ball::getObjectID() const
+{
+    return object_id;
 }

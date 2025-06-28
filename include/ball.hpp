@@ -4,17 +4,20 @@
 
 #include <glm/vec4.hpp>
 
+enum class ObjectID : int;
+
 class Ball {
 public:
     float x, z;
     float vx, vz;
     float radius;
+    int object_id;
 
     float rotationAngle;
     glm::vec4 rotationAxis;
 
-    Ball(float x, float z, float vx, float vz, float radius);
-    Ball(float x, float z, float radius);
+    Ball(ObjectID id, float x, float z, float vx, float vz, float radius);
+    Ball(ObjectID id, float x, float z, float radius);
 
     void update(float dt);
     void reflectOnWalls(float table_center_x, float table_center_z, float tableWidth, float tableHeight);
@@ -29,4 +32,6 @@ public:
 
     bool isCollidingWith(const Ball& other) const;
     void handleCollision(Ball& other);
+
+    int getObjectID() const;
 };

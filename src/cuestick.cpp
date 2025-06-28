@@ -7,13 +7,15 @@
 
 #include <iostream>
 
-Cuestick::Cuestick(float x, float y, float z, float angleX, float angleY, float angleZ)
-    : x(x), 
+Cuestick::Cuestick(ObjectID id, float x, float y, float z, float angleX, float angleY, float angleZ)
+    :
+    x(x), 
     y(y), 
     z(z), 
     angleY(angleY),
     angleX(angleX),
     angleZ(angleZ),
+    object_id(static_cast<int>(id)),
     state(CueState::Aiming),
     pullBackDistance(0.0f),
     shotPower(0.0f),
@@ -156,4 +158,8 @@ void Cuestick::setAngleX(float newAngleX) {
 
 void Cuestick::setAngleZ(float newAngleZ) {
     angleZ = newAngleZ;
+}
+
+int Cuestick::getObjectID() const {
+    return object_id;
 }
