@@ -272,6 +272,16 @@ int main(int argc, char* argv[])
                 cuestick.setAngleY(camera.getTheta());
                 cuestick.setAngleX(0.0f);
                 cuestick.setAngleZ(0.0f);
+
+                if (g_goLeft)
+                {
+                    cuestick.addHorizontalOffset(HORIZONTAL_OFFSET_SPEED * g_DeltaTime);
+                }
+
+                if (g_goRight)
+                {
+                    cuestick.addHorizontalOffset(-HORIZONTAL_OFFSET_SPEED * g_DeltaTime);
+                }
             }
         }
         
