@@ -2,12 +2,16 @@
 
 #include <string>
 
+#include <glm/vec4.hpp>
+
 class Ball {
 public:
     float x, z;
     float vx, vz;
     float radius;
 
+    float rotationAngle;
+    glm::vec4 rotationAxis;
 
     Ball(float x, float z, float vx, float vz, float radius);
     Ball(float x, float z, float radius);
@@ -19,4 +23,7 @@ public:
     float getBallSpeed();
     float getBallPositionX();
     float getBallPositionZ();
+
+    float getRotationAngle() const;
+    glm::vec4 getRotationAxis() const;
 };

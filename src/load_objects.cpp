@@ -63,7 +63,12 @@ void drawInitialScene(const std::vector<Ball>& vec_balls, const Cuestick& cuesti
     int balls[] = {BALL0, BALL1, BALL2, BALL3, BALL4, BALL5, BALL6, BALL7, BALL8, BALL9, BALL10, BALL11, BALL12, BALL13, BALL14, BALL15};
 
     for(int i=0; i<16; i++){
-        glm::mat4 m = Matrix_Translate(vec_balls[i].x, 1.1f, vec_balls[i].z);
+        glm::mat4 t = Matrix_Translate(vec_balls[i].x, 1.1f, vec_balls[i].z);
+
+        glm::mat4 r = Matrix_Rotate(-vec_balls[i].getRotationAngle(), vec_balls[i].getRotationAxis());
+
+        glm::mat4 m = t * r;
+
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(m));
         glUniform1i(g_object_id_uniform, balls[i]);
         DrawVirtualObject("the_ball");

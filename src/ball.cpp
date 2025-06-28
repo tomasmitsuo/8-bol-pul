@@ -1,18 +1,38 @@
-// TODO: CRIAR UMA CLASSE PARA A BOLA
-
 #include "ball.hpp"
 #include <cmath>
 
+#include "matrices.h"
+
+
 Ball::Ball(float x, float z, float vx, float vz, float radius)
-    : x(x), z(z), vx(vx), vz(vz), radius(radius){}
+    : x(x), z(z), vx(vx), vz(vz), radius(radius),
+      rotationAngle(0.0f), rotationAxis(1.0f, 0.0f, 0.0f, 0.0f) {}
 
 Ball::Ball(float x, float z, float radius)
-    : x(x), z(z), vx(0.0f), vz(0.0f), radius(radius){}
+    : x(x), z(z), vx(0.0f), vz(0.0f), radius(radius),
+      rotationAngle(0.0f), rotationAxis(1.0f, 0.0f, 0.0f, 0.0f) {}
 
 constexpr float FRICTION = 0.99f;
 
 void Ball::update(float dt) 
 {
+    if (isMoving()) {
+        float speed = getBallSpeed();
+        float distanceTraveled = speed * dt;
+        float angleIncrement = distanceTraveled / radius;
+
+        glm::vec4 velocityVector(vx, 0.0f, vz, 0.0f);
+        
+        constexpr float STABLE_ROTATION_THRESHOLD = 0.05f;
+
+        if (speed > STABLE_ROTATION_THRESHOLD) {
+            const glm::vec4 rotationVector = glm::vec4(-vz, 0.0f, vx, 0.0f);
+            rotationAxis = rotationVector / norm(rotationVector);
+        }
+
+        rotationAngle += angleIncrement;
+    }
+
     x += vx * dt;
     z += vz * dt;
 
@@ -40,7 +60,7 @@ bool Ball::isMoving() const
 
 float Ball::getBallSpeed()
 {
-    return sqrt(pow(this->vz,2) + pow(this->vz,2));
+    return sqrt(pow(this->vx,2) + pow(this->vz,2));
 }
 
 float Ball::getBallPositionX()
@@ -51,4 +71,14 @@ float Ball::getBallPositionX()
 float Ball::getBallPositionZ()
 {
     return this->z;
+}
+
+float Ball::getRotationAngle() const
+{
+    return rotationAngle;
+}
+
+glm::vec4 Ball::getRotationAxis() const
+{
+    return rotationAxis;
 }
