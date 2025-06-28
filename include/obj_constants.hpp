@@ -35,3 +35,8 @@ constexpr float FIELD_OF_VIEW = 3.141592f / 3.0f;
 constexpr float CUESTICK_ANGLE = -100.0f * 3.14159265359 / 180.0f;
 constexpr float CUESTICK_HEIGHT = TABLE_HEIGHT - 0.4f;
 constexpr float CUESTICK_DISTANCE = BALL_DIAMETER;
+
+constexpr float CUESTICK_CHARGE_SPEED = 5.0f;
+constexpr float MAX_PULL_BACK = 3.0f;
+constexpr float CUESTICK_SHOOT_SPEED = 25.0f;
+constexpr float SHOT_POWER_MULTIPLIER = 5.0f;
