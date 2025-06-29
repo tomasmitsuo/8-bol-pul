@@ -20,6 +20,8 @@ public:
     static constexpr float MAX_HORIZONTAL_OFFSET = 0.1f;
     static constexpr float SIDESTEP_FACTOR = 1.9f;
 
+    static constexpr float ROTATION_SPEED = 0.5f;
+
 public:
     enum class CueState
     {
@@ -70,6 +72,10 @@ public:
     void setAngleY(float newAngleY);
     void setAngleX(float newAngleX);
     void setAngleZ(float newAngleZ);
+
+    void addAngleY(float value);
+    void addAngleX(float value);
+    void addAngleZ(float value);
 
     int getObjectID() const;
 };
