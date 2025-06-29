@@ -132,6 +132,8 @@ bool g_goFront = false;
 bool g_goBack = false;
 bool g_goRight = false;
 bool g_goLeft = false;
+bool g_goStrafeLeft = false;
+bool g_goStrafeRight = false;
 
 bool g_ResetGame = false;
 
@@ -264,19 +266,34 @@ int main(int argc, char* argv[])
                 cuestick.shoot();
             }
 
-            if (cuestick.isAiming() && camera.isUsingLookAtCamera()) {
-                cuestick.setAngleY(camera.getTheta());
-                cuestick.setAngleX(0.0f);
-                cuestick.setAngleZ(0.0f);
-
-                if (g_goLeft)
+            if (cuestick.isAiming()) {
+                if (camera.isUsingLookAtCamera())
                 {
-                    cuestick.addHorizontalOffset(Cuestick::HORIZONTAL_OFFSET_SPEED * g_DeltaTime);
+                    cuestick.setAngleY(camera.getTheta());
+                    cuestick.setAngleX(0.0f);
+                    cuestick.setAngleZ(0.0f);
+
+                    if (g_goLeft)
+                    {
+                        cuestick.addHorizontalOffset(Cuestick::HORIZONTAL_OFFSET_SPEED * g_DeltaTime);
+                    }
+
+                    if (g_goRight)
+                    {
+                        cuestick.addHorizontalOffset(-Cuestick::HORIZONTAL_OFFSET_SPEED * g_DeltaTime);
+                    }
                 }
-
-                if (g_goRight)
+                else
                 {
-                    cuestick.addHorizontalOffset(-Cuestick::HORIZONTAL_OFFSET_SPEED * g_DeltaTime);
+                    // If using free camera, we can change the angles of the cuestick with Q and E keys
+                    if (g_goStrafeLeft)
+                    {
+                        cuestick.addAngleY(-Cuestick::ROTATION_SPEED * g_DeltaTime);
+                    }
+                    if (g_goStrafeRight)
+                    {
+                        cuestick.addAngleY(Cuestick::ROTATION_SPEED * g_DeltaTime);
+                    }
                 }
             }
         }

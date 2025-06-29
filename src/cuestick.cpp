@@ -141,3 +141,15 @@ void Cuestick::setAngleZ(float newAngleZ) {
 int Cuestick::getObjectID() const {
     return object_id;
 }
+
+void Cuestick::addAngleY(float value) {
+    angleY += value;
+}
+
+void Cuestick::addAngleX(float value) {
+    angleX += value;
+}
+
+void Cuestick::addAngleZ(float value) {
+    angleZ += value;
+}
