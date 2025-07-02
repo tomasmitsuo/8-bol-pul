@@ -6,7 +6,11 @@
 #include <iostream>
 
 Table::Table(float centerX, float centerZ, float width, float length, float holeRadius)
-    : holeRadius(holeRadius) {
+    : holeRadius(holeRadius),
+      centerX(centerX),
+      centerZ(centerZ),
+      width(width),
+      length(length) {
     
     // Calculate the boundaries of the table
     float halfWidth = width / 2.0f;
@@ -26,4 +30,20 @@ Table::Table(float centerX, float centerZ, float width, float length, float hole
     // Middle holes
     holePositions.push_back(glm::vec2(left, centerZ));
     holePositions.push_back(glm::vec2(right, centerZ));
+}
+
+float Table::getCenterX() const {
+    return centerX;
+}
+
+float Table::getCenterZ() const {
+    return centerZ;
+}
+
+float Table::getWidth() const {
+    return width;
+}
+
+float Table::getLength() const {
+    return length;
 }

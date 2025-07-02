@@ -40,7 +40,7 @@ public:
     Ball(ObjectID id, glm::vec2 position, float radius);
 
     void update(float dt);
-    void reflectOnWalls(float table_center_x, float table_center_z, float tableWidth, float tableHeight);
+    void reflectOnWalls(const Table& table);
     bool isMoving() const;
     void pocket();
     void unpocket();

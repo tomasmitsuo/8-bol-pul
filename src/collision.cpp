@@ -10,12 +10,16 @@
 
 
 //! Start of Sphere-Wall(Plane) collision
-void Ball::reflectOnWalls(float table_center_x, float table_center_z, float tableWidth, float tableHeight)
+void Ball::reflectOnWalls(const Table& table)
 {
-    if (x - radius < table_center_x - tableWidth / 2 || x + radius > table_center_x + tableWidth / 2) {
+    const float table_center_x = table.getCenterX();
+    const float halfTableWidth = table.getWidth() / 2;
+    if (x - radius < table_center_x - halfTableWidth || x + radius > table_center_x + halfTableWidth) {
         vx *= -FRICTION;
     }
-    if (z - radius < table_center_z - tableHeight / 2 || z + radius > table_center_z + tableHeight / 2) {
+    const float table_center_z = table.getCenterZ();
+    const float halfTableLength = table.getLength() / 2;
+    if (z - radius < table_center_z - halfTableLength || z + radius > table_center_z + halfTableLength) {
         vz *= -FRICTION;
     }
 }
