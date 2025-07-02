@@ -13,6 +13,7 @@ public:
     static constexpr float CENTER_X = 0.4f;
     static constexpr float CENTER_Z = 4.0f;
     static constexpr float HOLE_RADIUS = 0.25f;
+    static constexpr float BOUNCINESS = 0.2f;
 
 private:
     std::vector<glm::vec2> holePositions;

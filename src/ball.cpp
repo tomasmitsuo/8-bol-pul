@@ -41,14 +41,22 @@ void Ball::update(float dt)
             rotationAxis = rotationVector / norm(rotationVector);
         }
     }
+    velocity.y -= Ball::GRAVITY * dt;
 
     position += velocity * dt;
+
     velocity.x *= Ball::FRICTION;
     velocity.z *= Ball::FRICTION;
+    if (position.y < RESTING_Y) 
+    {
+        position.y = RESTING_Y;
 
-    if (std::abs(velocity.x) < Ball::STOP_TRAVEL_THRESHOLD) velocity.x = 0;
-    if (std::abs(velocity.y) < Ball::STOP_TRAVEL_THRESHOLD) velocity.y = 0;
-    if (std::abs(velocity.z) < Ball::STOP_TRAVEL_THRESHOLD) velocity.z = 0;
+        velocity.y = -velocity.y * Table::BOUNCINESS;
+    }
+
+    if (std::abs(velocity.x) < Ball::STOP_TRAVEL_THRESHOLD) velocity.x = 0.0f;
+    if (std::abs(velocity.y) < Ball::BOUNCE_THRESHOLD) velocity.y = 0.0f;
+    if (std::abs(velocity.z) < Ball::STOP_TRAVEL_THRESHOLD) velocity.z = 0.0f;
 }
 
 
