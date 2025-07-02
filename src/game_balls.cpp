@@ -48,3 +48,27 @@ Ball &GameBalls::getWhiteBall()
 {
     return balls[WHITE_BALL];
 }
+
+void GameBalls::update(float deltaTime, const Table &table)
+{
+    for (size_t i = 0; i < balls.size(); ++i) {
+        Ball & curr_ball = balls[i];
+
+        if (curr_ball.hasCollision())
+        {
+            for (size_t j = i + 1; j < balls.size(); ++j) {
+                Ball & other_ball = balls[j];
+                if (curr_ball.isCollidingWith(other_ball)) {
+                    curr_ball.handleCollision(other_ball);
+                }
+            }
+
+            if (curr_ball.isMoving())
+            {
+                curr_ball.reflectOnWalls(table);
+            }
+        }
+
+        curr_ball.update(deltaTime);
+    }
+}

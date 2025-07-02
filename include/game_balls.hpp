@@ -26,4 +26,6 @@ public:
     std::vector<Ball> &getBalls();
 
     Ball &getWhiteBall();
+
+    void update(float deltaTime, const Table &table);
 };

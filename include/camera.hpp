@@ -44,7 +44,7 @@ private:
 public:
     Camera(const Ball &targetBall, float camera_height, float camera_speed, float distance, float theta, float phi, float nearPlane, float farPlane, float fieldOfView);
 
-    void updatePosition(float delta_time, bool go_front, bool go_back, bool go_left, bool go_right);
+    void control(float delta_time, bool go_front, bool go_back, bool go_left, bool go_right);
 
     glm::vec4 getPosition() const;
     glm::vec4 getLookAt() const;
