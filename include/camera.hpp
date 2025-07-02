@@ -10,7 +10,7 @@
 class Camera {
 public:
     static constexpr float SPEED = 2.5f; // Speed of the camera movement
-    static constexpr float HEIGHT = Table::HEIGHT + 0.1f; // Height of the camera
+    static constexpr float HEIGHT = 0.5f; // Height of the camera
     static constexpr float DISTANCE = 3.5f; // Distance of the camera from the target ball
     static constexpr float THETA = 0.0f; // Angle theta (in the ZX plane)
     static constexpr float PHI = 0.6f; // Angle phi (relative to the Y axis)

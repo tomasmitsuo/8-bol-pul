@@ -18,13 +18,13 @@ void Camera::updatePosition(float delta_time, bool go_front, bool go_back, bool 
     upVector = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
 
     if (using_look_at_camera){
-        float y = distance * std::sin(phi);
         const glm::vec3 ball_position = targetBall.getPosition();
+        float y = ball_position.y + distance * std::sin(phi);
         float x = ball_position.x + distance * std::sin(theta) * std::cos(phi);
         float z = ball_position.z + distance * std::cos(theta) * std::cos(phi);
         position = glm::vec4(x, y, z, 1.0f);
         viewVector = lookAt - position;
-        lookAt = glm::vec4(ball_position.x, camera_height, ball_position.z, 1.0f);
+        lookAt = glm::vec4(ball_position.x, ball_position.y + camera_height, ball_position.z, 1.0f);
     }
     else {
         float y = std::sin(phi);
