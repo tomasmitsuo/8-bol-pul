@@ -23,11 +23,11 @@ void Ball::update(float dt)
 
     if (isMoving()) {
         float speed = getBallSpeed();
-        float distanceTraveled = speed * dt;
-        float angleIncrement = distanceTraveled / radius;
-        rotationAngle += angleIncrement;
-
         if (speed > Ball::STABLE_ROTATION_THRESHOLD) {
+            float distanceTraveled = speed * dt;
+            float angleIncrement = distanceTraveled / radius;
+            rotationAngle += angleIncrement;
+
             const glm::vec4 rotationVector = glm::vec4(-velocity.z, 0.0f, velocity.x, 0.0f);
             rotationAxis = rotationVector / norm(rotationVector);
         }
@@ -36,9 +36,9 @@ void Ball::update(float dt)
     position += velocity * dt;
     velocity *= Ball::FRICTION;
 
-    if (std::abs(velocity.x) < 0.01f) velocity.x = 0;
-    if (std::abs(velocity.y) < 0.01f) velocity.y = 0;
-    if (std::abs(velocity.z) < 0.01f) velocity.z = 0;
+    if (std::abs(velocity.x) < Ball::STOP_TRAVEL_THRESHOLD) velocity.x = 0;
+    if (std::abs(velocity.y) < Ball::STOP_TRAVEL_THRESHOLD) velocity.y = 0;
+    if (std::abs(velocity.z) < Ball::STOP_TRAVEL_THRESHOLD) velocity.z = 0;
 }
 
 
