@@ -38,7 +38,10 @@ void Ball::update(float dt)
 
         if (speed > Ball::STABLE_ROTATION_THRESHOLD) {
             const glm::vec4 rotationVector = glm::vec4(-velocity.z, 0.0f, velocity.x, 0.0f);
-            rotationAxis = rotationVector / norm(rotationVector);
+            const float normRotationVector = norm(rotationVector);
+            if (normRotationVector > 0.0f) {
+                rotationAxis = rotationVector / normRotationVector;
+            }
         }
     }
     velocity.y -= Ball::GRAVITY * dt;
@@ -62,7 +65,7 @@ void Ball::update(float dt)
 
 bool Ball::isMoving() const 
 {
-    return velocity.x != 0 || velocity.y != 0 || velocity.z != 0;
+    return velocity.x != 0.0f || velocity.y != 0.0f || velocity.z != 0.0f;
 }
 
 void Ball::pocket()
