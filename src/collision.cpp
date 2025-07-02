@@ -11,7 +11,7 @@
 #include <glm/glm.hpp>
 
 
-//! Start of Sphere-Wall(Plane) collision
+//! Start of Sphere-Wall(Plane/Box) collision
 void Ball::reflectOnWalls(const Table& table)
 {
     const float table_center_x = table.getCenterX();
@@ -25,7 +25,7 @@ void Ball::reflectOnWalls(const Table& table)
         velocity.z *= -FRICTION;
     }
 }
-//! End of Sphere-Wall(Plane) collision
+//! End of Sphere-Wall(Plane/Box) collision
 
 //! Start of Sphere-Sphere collision
 bool Ball::isCollidingWith(const Ball& other) const
@@ -64,35 +64,77 @@ void Ball::handleCollision(Ball& other)
 }
 //! End of Sphere-Sphere collision
 
-void Cuestick::calculateShooting(float deltaTime, Ball& white_ball,const glm::vec2& dir_vec, const glm::vec2& sidestep_vec)
+//! Start of Sphere-Ray collision
+void Cuestick::calculateShooting(Ball& white_ball)
 {
-    // Move the cue stick forward rapidly
-    pullBackDistance -= Cuestick::SHOOT_SPEED * deltaTime;
+    const glm::vec4 ball_center = white_ball.getPosition();
+    const float ball_radius = white_ball.getRadius();
+    const float yaw = angles.y;
+    const float pitch = angles.x;
+
+    const glm::vec4 dir = glm::vec4(
+        std::cos(pitch) * std::sin(yaw),
+        std::sin(pitch),
+        std::cos(pitch) * std::cos(yaw),
+        0.0f
+    );
+
+    const glm::vec4 right = glm::vec4(-std::cos(yaw), 0.0f, std::sin(yaw), 0.0f);
+    const glm::vec4 up = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
+
+    const float backwardDistance = followRadius + std::max(0.0f, pullBackDistance);
+    const glm::vec4 centered_handle_pos = ball_center + glm::vec4(std::sin(yaw), 0.0f, std::cos(yaw), 0.0f) * backwardDistance;
+    
+    const glm::vec4 offset_vector = this->position - centered_handle_pos;
+    const float effective_horizontal_offset = dotproduct(offset_vector, right);
+    const float effective_vertical_offset = this->position.y - Cuestick::HEIGHT;
+
+    // Different vertical scales for up and down effects
+    const float vertical_scale = (effective_vertical_offset > 0) ? Cuestick::VERTICAL_UP_EFFECT_SCALE : Cuestick::VERTICAL_DOWN_EFFECT_SCALE;
+    // Sum of all offsets, offset subtracted to get the direction the ball should go (opposite of hit)
+    const glm::vec4 aim_target = ball_center
+                                - right * effective_horizontal_offset * Cuestick::HORIZONTAL_EFFECT_SCALE
+                                - up * effective_vertical_offset * vertical_scale;
+
+    const glm::vec4 tip_start_pos = aim_target - dir * (ball_radius + prev_pullBackDistance);
+    const glm::vec4 tip_end_pos = aim_target - dir * (ball_radius + pullBackDistance);
+    const glm::vec4 ray_direction = tip_end_pos - tip_start_pos;
+
+    // Fix for preventing the cue from crossing the ball in one frame
+    // Solve the quadratic equation for the intersection of the ray with the sphere
+    const glm::vec4 ball_to_tip = tip_start_pos - ball_center;
+    const float quad_a = dotproduct(ray_direction, ray_direction);
+    const float quad_b = 2.0f * dotproduct(ray_direction, ball_to_tip);
+    const float quad_c = dotproduct(ball_to_tip, ball_to_tip) - (ball_radius * ball_radius);
+    const float delta = quad_b * quad_b - 4.0f * quad_a * quad_c;
 
     // Check for collision
-    if (pullBackDistance <= 0.0f) {
-        std::cout << "Impact!" << std::endl;
+    if (delta >= 0.0f)
+    {
+        const float t = (-quad_b - std::sqrt(delta)) / (2.0f * quad_a);
+        if (t >= 0.0f && t <= 1.0f)
+        {
+            std::cout << "Impact!" << std::endl;
 
-        glm::vec2 force_vec = -dir_vec;
+            const glm::vec4 impact_point = tip_start_pos + ray_direction * t;
 
-        force_vec += sidestep_vec * horizontalOffset * Cuestick::SIDESTEP_FACTOR;
+            glm::vec4 force_direction = impact_point - ball_center;
 
-        force_vec = (force_vec / norm(force_vec)) * shotPower * Cuestick::SHOT_POWER_MULTIPLIER;
+            if (norm(force_direction) > 0.0f) {
+                glm::vec4 final_force = (force_direction / norm(force_direction)) * shotPower * Cuestick::SHOT_POWER_MULTIPLIER;
+                white_ball.applyForce(final_force);
+            }
 
-        // Apply force to the white ball
-        white_ball.applyForce(glm::vec4(force_vec.x, 0.0f, force_vec.y, 0.0f));
-
-        // Reset to Aiming state
-        state = CueState::Aiming;
-        horizontalOffset = 0.0f;
+            resetAim();
+        }
     }
-
-    // Update position during the shot animation
-    const glm::vec4 ball_position = white_ball.getPosition();
-    const float backwardDistance = Cuestick::DISTANCE + std::max(0.0f, pullBackDistance);
-    position.x = ball_position.x + dir_vec.x * backwardDistance - sidestep_vec.x * horizontalOffset;
-    position.z = ball_position.z + dir_vec.y * backwardDistance - sidestep_vec.y * horizontalOffset;
+    else
+    {
+        std::cout << "Missed!" << std::endl;
+        resetAim();
+    }
 }
+//! End of Sphere-Ray collision
 
 //! Start of Sphere-Circle collision
 void Table::update(std::vector<Ball>& balls) {
