@@ -10,7 +10,8 @@ Ball::Ball(ObjectID id, float x, float z, float vx, float vz, float radius)
       radius(radius), pocketed(false),
       animating(false), animationProgress(0.0f), animationSpeed(ANIMATION_SPEED),
       anim_p0(0.0f, 0.0f, 0.0f, 1.0f), anim_p1(0.0f, 0.0f, 0.0f, 1.0f), anim_p2(0.0f, 0.0f, 0.0f, 1.0f),
-      rotationAngle(0.0f), rotationAxis(1.0f, 0.0f, 0.0f, 0.0f), object_id(static_cast<int>(id)) {}
+      rotationAngle(0.0f), rotationAxis(1.0f, 0.0f, 0.0f, 0.0f),
+      object_id(static_cast<int>(id)) {}
 
 Ball::Ball(ObjectID id, float x, float z, float radius)
     : Ball(id, x, z, 0.0f, 0.0f, radius) {}
@@ -31,18 +32,19 @@ void Ball::update(float dt)
 
     if (isMoving()) {
         float speed = getBallSpeed();
-        if (speed > Ball::STABLE_ROTATION_THRESHOLD) {
-            float distanceTraveled = speed * dt;
-            float angleIncrement = distanceTraveled / radius;
-            rotationAngle += angleIncrement;
+        float distanceTraveled = speed * dt;
+        float angleIncrement = distanceTraveled / radius;
+        rotationAngle += angleIncrement;
 
+        if (speed > Ball::STABLE_ROTATION_THRESHOLD) {
             const glm::vec4 rotationVector = glm::vec4(-velocity.z, 0.0f, velocity.x, 0.0f);
             rotationAxis = rotationVector / norm(rotationVector);
         }
     }
 
     position += velocity * dt;
-    velocity *= Ball::FRICTION;
+    velocity.x *= Ball::FRICTION;
+    velocity.z *= Ball::FRICTION;
 
     if (std::abs(velocity.x) < Ball::STOP_TRAVEL_THRESHOLD) velocity.x = 0;
     if (std::abs(velocity.y) < Ball::STOP_TRAVEL_THRESHOLD) velocity.y = 0;
@@ -71,7 +73,7 @@ void Ball::unpocket()
 
 float Ball::getBallSpeed()
 {
-    return glm::length(velocity);
+    return norm(velocity);
 }
 
 glm::vec4 Ball::getPosition() const

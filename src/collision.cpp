@@ -40,10 +40,10 @@ void Ball::handleCollision(Ball& other)
 {
     glm::vec4 direction = other.position - position;
 
-    float distance = glm::length(direction);
+    float distance = norm(direction);
     if (distance == 0.0f) {
         direction += glm::vec4(0.01f, 0.0f, 0.01f, 0.0f);
-        distance = glm::length(direction);
+        distance = norm(direction);
     }
 
     const glm::vec4 normal = direction / distance;

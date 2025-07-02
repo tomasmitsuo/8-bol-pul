@@ -27,7 +27,7 @@ public:
     static constexpr float STABLE_ROTATION_THRESHOLD = 0.05f;
     static constexpr float STOP_TRAVEL_THRESHOLD = 0.01f;
 
-    static constexpr float ANIMATION_SPEED = 1.5f;
+    static constexpr float ANIMATION_SPEED = 1.0f;
 
 private:
     glm::vec4 position;
