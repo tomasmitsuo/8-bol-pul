@@ -53,14 +53,16 @@ void Cuestick::update(float deltaTime, Ball& white_ball)
     const float right_x = -dir_z;
     const float right_z = dir_x;
 
+    const glm::vec3 ball_position = white_ball.getPosition();
+
     switch (state) {
         case CueState::Aiming:
         {
             // In Aiming state, the cue just follows the white ball
             pullBackDistance = 0.0f;
-            this->x = white_ball.x + dir_x * Cuestick::DISTANCE + right_x * horizontalOffset;
+            this->x = ball_position.x + dir_x * Cuestick::DISTANCE + right_x * horizontalOffset;
             this->y = Cuestick::HEIGHT;
-            this->z = white_ball.z + dir_z * Cuestick::DISTANCE + right_z * horizontalOffset;
+            this->z = ball_position.z + dir_z * Cuestick::DISTANCE + right_z * horizontalOffset;
             break;
         }
 
@@ -68,8 +70,8 @@ void Cuestick::update(float deltaTime, Ball& white_ball)
         {
             // Pull the cue stick back
             pullBackDistance = std::min(pullBackDistance + Cuestick::CHARGE_SPEED * deltaTime, Cuestick::MAX_PULL_BACK);
-            this->x = white_ball.x + dir_x * (Cuestick::DISTANCE + pullBackDistance) + right_x * horizontalOffset;
-            this->z = white_ball.z + dir_z * (Cuestick::DISTANCE + pullBackDistance) + right_z * horizontalOffset;
+            this->x = ball_position.x + dir_x * (Cuestick::DISTANCE + pullBackDistance) + right_x * horizontalOffset;
+            this->z = ball_position.z + dir_z * (Cuestick::DISTANCE + pullBackDistance) + right_z * horizontalOffset;
             break;
         }
         case CueState::Shooting:

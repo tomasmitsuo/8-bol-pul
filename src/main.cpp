@@ -107,9 +107,9 @@ Camera camera(
 
 Cuestick cuestick(
     ObjectID::CUESTICK,
-    white_ball.x, 
-    Cuestick::HEIGHT, 
-    white_ball.z, 
+    white_ball.getPosition().x,
+    Cuestick::HEIGHT,
+    white_ball.getPosition().z,
     g_AngleX, // Ângulo X
     g_AngleY, // Ângulo Y
     g_AngleZ // Ângulo Z
@@ -304,13 +304,13 @@ int main(int argc, char* argv[])
 
         for (size_t i = 0; i < vec_balls.size(); ++i) {
             Ball & curr_ball = vec_balls[i];
-            if (curr_ball.isPocketed) {
+            if (curr_ball.isPocketed()) {
                 continue;
             }
 
             for (size_t j = i + 1; j < vec_balls.size(); ++j) {
                 Ball & other_ball = vec_balls[j];
-                if (other_ball.isPocketed) {
+                if (other_ball.isPocketed()) {
                     continue;
                 }
                 if (curr_ball.isCollidingWith(other_ball)) {
