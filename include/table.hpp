@@ -17,9 +17,18 @@ public:
 private:
     std::vector<glm::vec2> holePositions;
     float holeRadius;
+    float centerX;
+    float centerZ;
+    float width;
+    float length;
 
 public:
     Table(float centerX, float centerZ, float width, float length, float holeRadius);
 
     void update(std::vector<Ball>& balls);
+
+    float getCenterX() const;
+    float getCenterZ() const;
+    float getWidth() const;
+    float getLength() const;
 };

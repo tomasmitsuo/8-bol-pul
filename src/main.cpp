@@ -320,7 +320,7 @@ int main(int argc, char* argv[])
 
             if (curr_ball.isMoving())
             {
-                curr_ball.reflectOnWalls(Table::CENTER_X, Table::CENTER_Z, Table::WIDTH, Table::LENGTH);
+                curr_ball.reflectOnWalls(pool_table);
             }
 
             curr_ball.update(g_DeltaTime);
