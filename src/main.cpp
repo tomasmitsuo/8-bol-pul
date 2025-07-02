@@ -112,7 +112,8 @@ Cuestick cuestick(
     white_ball.getPosition().z,
     g_AngleX, // Ângulo X
     g_AngleY, // Ângulo Y
-    g_AngleZ // Ângulo Z
+    g_AngleZ, // Ângulo Z
+    white_ball.getRadius()
 );
 
 Table pool_table(
@@ -246,6 +247,7 @@ int main(int argc, char* argv[])
             vec_balls = gameBalls.getBalls();
             camera.setUsingPerspectiveProjection(g_UsePerspectiveProjection);
             camera.setCameraType(true);
+            cuestick.resetAim();
         }
 
         camera.control(g_DeltaTime, g_goFront, g_goBack, g_goRight, g_goLeft);
@@ -253,73 +255,25 @@ int main(int argc, char* argv[])
         const glm::mat4 projection = camera.getProjectionMatrix(g_ScreenRatio);
 
         glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
-        glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));  
+        glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
 
-        if (!white_ball.isMoving()) {
-            // Check for right-click PRESS event
-            if (g_RightMouseButtonPressed && !last_right_button) {
-                cuestick.startCharging();
-            }
+        cuestick.control(
+            g_DeltaTime,
+            g_RightMouseButtonPressed,
+            g_MiddleMouseButtonPressed,
+            g_goFront,
+            g_goBack,
+            g_goLeft,
+            g_goRight,
+            g_goStrafeLeft,
+            g_goStrafeRight,
+            camera,
+            white_ball
+        );
+       
+        gameBalls.update(g_DeltaTime, pool_table);
 
-            // Check for right-click RELEASE event
-            if (!g_RightMouseButtonPressed && last_right_button) {
-                cuestick.shoot();
-            }
-
-            if (cuestick.isAiming()) {
-                if (camera.isUsingLookAtCamera())
-                {
-                    cuestick.setAngles(0.0f, camera.getTheta(), 0.0f);
-
-                    if (g_goLeft)
-                    {
-                        cuestick.addHorizontalOffset(Cuestick::HORIZONTAL_OFFSET_SPEED * g_DeltaTime);
-                    }
-
-                    if (g_goRight)
-                    {
-                        cuestick.addHorizontalOffset(-Cuestick::HORIZONTAL_OFFSET_SPEED * g_DeltaTime);
-                    }
-                }
-                else
-                {
-                    // If using free camera, we can change the angles of the cuestick with Q and E keys
-                    if (g_goStrafeLeft)
-                    {
-                        cuestick.addAngleY(-Cuestick::ROTATION_SPEED * g_DeltaTime);
-                    }
-                    if (g_goStrafeRight)
-                    {
-                        cuestick.addAngleY(Cuestick::ROTATION_SPEED * g_DeltaTime);
-                    }
-                }
-            }
-        }
-        
-        cuestick.update(g_DeltaTime, white_ball);
-
-        last_right_button = g_RightMouseButtonPressed;
-
-        for (size_t i = 0; i < vec_balls.size(); ++i) {
-            Ball & curr_ball = vec_balls[i];
-
-            if (curr_ball.hasCollision())
-            {
-                for (size_t j = i + 1; j < vec_balls.size(); ++j) {
-                    Ball & other_ball = vec_balls[j];
-                    if (curr_ball.isCollidingWith(other_ball)) {
-                        curr_ball.handleCollision(other_ball);
-                    }
-                }
-
-                if (curr_ball.isMoving())
-                {
-                    curr_ball.reflectOnWalls(pool_table);
-                }
-            }
-
-            curr_ball.update(g_DeltaTime);
-        }
+        cuestick.update(g_DeltaTime, white_ball, camera);
 
         pool_table.update(vec_balls);
 

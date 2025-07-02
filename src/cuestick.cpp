@@ -6,22 +6,28 @@
 #include <iostream>
 
 constexpr float Cuestick::MAX_PULL_BACK;
-constexpr float Cuestick::MAX_HORIZONTAL_OFFSET;
-constexpr float Cuestick::DISTANCE;
+constexpr float Cuestick::SHOT_POWER_MULTIPLIER;
+constexpr float Cuestick::HORIZONTAL_EFFECT_SCALE;
+constexpr float Cuestick::VERTICAL_UP_EFFECT_SCALE;
+constexpr float Cuestick::VERTICAL_DOWN_EFFECT_SCALE;
 
-Cuestick::Cuestick(ObjectID id, const glm::vec3 &position, const glm::vec3 &angles)
+Cuestick::Cuestick(ObjectID id, const glm::vec3 &position, const glm::vec3 &angles, const float followRadius)
     :
     position(glm::vec4(position, 1.0f)),
     angles(angles),
     object_id(static_cast<int>(id)),
     state(CueState::Aiming),
     pullBackDistance(0.0f),
+    prev_pullBackDistance(0.0f),
     shotPower(0.0f),
-    horizontalOffset(0.0f)
+    horizontalOffset(0.0f),
+    verticalOffset(0.0f),
+    followRadius(followRadius),
+    last_right_button(false)
     {}
 
-Cuestick::Cuestick(ObjectID id, float x, float y, float z, float angleX, float angleY, float angleZ)
-    : Cuestick(id, glm::vec3(x, y, z), glm::vec3(angleX, angleY, angleZ))
+Cuestick::Cuestick(ObjectID id, float x, float y, float z, float angleX, float angleY, float angleZ, float followRadius)
+    : Cuestick(id, glm::vec3(x, y, z), glm::vec3(angleX, angleY, angleZ), followRadius)
     {}
 
 void Cuestick::startCharging() {
@@ -40,42 +46,72 @@ void Cuestick::shoot() {
     }
 }
 
-void Cuestick::addHorizontalOffset(float offset) {
-    horizontalOffset += offset;
-    // There is not std::clamp in the C++ version currently used
-    horizontalOffset = std::max(-Cuestick::MAX_HORIZONTAL_OFFSET, std::min(Cuestick::MAX_HORIZONTAL_OFFSET, horizontalOffset));
+void Cuestick::strafeHorizontal(float distance)
+{
+    horizontalOffset += distance;
+    clampAimingOffsets();
 }
 
-void Cuestick::update(float deltaTime, Ball& white_ball)
+void Cuestick::strafeVertical(float distance)
 {
+    verticalOffset += distance;
+    clampAimingOffsets();
+}
+
+void Cuestick::resetAim()
+{
+    state = CueState::Aiming;
+    horizontalOffset = 0.0f;
+    verticalOffset = 0.0f;
+}
+
+void Cuestick::clampAimingOffsets()
+{
+    const float max_offset = followRadius * 0.95f;
+    const float total_offset_squared = horizontalOffset * horizontalOffset + verticalOffset * verticalOffset;
+
+    if (total_offset_squared > (max_offset * max_offset))
+    {
+        const float total_offset = std::sqrt(total_offset_squared);
+        horizontalOffset = (horizontalOffset / total_offset) * max_offset;
+        verticalOffset = (verticalOffset / total_offset) * max_offset;
+    }
+}
+
+void Cuestick::update(float deltaTime, Ball& white_ball, const Camera& camera)
+{
+    switch (state)
+    {
+    case CueState::Aiming:
+        pullBackDistance = 0.0f;
+        break;
+    case CueState::Charging:
+        pullBackDistance = std::min(pullBackDistance + Cuestick::CHARGE_SPEED * deltaTime, Cuestick::MAX_PULL_BACK);
+        break;
+    case CueState::Shooting:
+        pullBackDistance -= Cuestick::SHOOT_SPEED * deltaTime;
+        break;
+    }
+
     const glm::vec4 ball_position = white_ball.getPosition();
     const glm::vec4 dir = glm::vec4(std::sin(angles.y), 0.0f, std::cos(angles.y), 0.0f);
     const glm::vec4 right = glm::vec4(-dir.z, 0.0f, dir.x, 0.0f);
-
-    switch (state) {
-        case CueState::Aiming:
-        {
-            // In Aiming state, the cue just follows the white ball
-            pullBackDistance = 0.0f;
-            position = ball_position + dir * Cuestick::DISTANCE + right * horizontalOffset;
-            break;
-        }
-
-        case CueState::Charging:
-        {
-            // Pull the cue stick back
-            pullBackDistance = std::min(pullBackDistance + Cuestick::CHARGE_SPEED * deltaTime, Cuestick::MAX_PULL_BACK);
-            position = ball_position + dir * (Cuestick::DISTANCE + pullBackDistance) + right * horizontalOffset;
-            break;
-        }
-        case CueState::Shooting:
-        {
-            const glm::vec2 dir_vec = glm::vec2(dir.x, dir.z);
-            const glm::vec2 sidestep_vec = glm::vec2(-right.x, -right.z);
-            calculateShooting(deltaTime, white_ball, dir_vec, sidestep_vec);
-            break;
-        }
+    
+    const float backwardDistance = followRadius + std::max(0.0f, pullBackDistance);
+    
+    position = ball_position + dir * backwardDistance + right * horizontalOffset;
+    position.y = Cuestick::HEIGHT + verticalOffset;
+    if (camera.isUsingLookAtCamera())
+    {
+        setAngles(0.0f, camera.getTheta(), 0.0f);
     }
+    
+    if (state == CueState::Shooting)
+    {
+        calculateShooting(white_ball);
+    }
+
+    prev_pullBackDistance = pullBackDistance;
 }
 
 glm::vec4 Cuestick::getPosition() const {
@@ -124,4 +160,64 @@ void Cuestick::addAngleX(float value) {
 
 void Cuestick::addAngleZ(float value) {
     angles.z += value;
+}
+
+
+void Cuestick::control(float delta_time, bool right_mouse_button, bool middle_mouse_button, bool go_front, bool go_back, bool go_left, bool go_right, bool strafe_left, bool strafe_right, const Camera &camera, const Ball &white_ball)
+{
+    if (!white_ball.isMoving()) {
+        // Check for right-click PRESS event
+        if (right_mouse_button && !last_right_button) {
+            startCharging();
+        }
+
+        // Check for right-click RELEASE event
+        if (!right_mouse_button && last_right_button) {
+            shoot();
+        }
+
+        if (middle_mouse_button)
+        {
+            resetAim();
+        }
+
+        if (isAiming()) {
+            if (camera.isUsingLookAtCamera())
+            {
+                if (go_left)
+                {
+                    strafeHorizontal(Cuestick::STRAFE_SPEED * delta_time);
+                }
+
+                if (go_right)
+                {
+                    strafeHorizontal(-Cuestick::STRAFE_SPEED * delta_time);
+                }
+
+                if (go_front)
+                {
+                    strafeVertical(Cuestick::STRAFE_SPEED * delta_time);
+                }
+
+                if (go_back)
+                {
+                    strafeVertical(-Cuestick::STRAFE_SPEED * delta_time);
+                }
+            }
+            else
+            {
+                // If using free camera, we can change the angles of the cuestick with Q and E keys
+                if (strafe_left)
+                {
+                    addAngleY(-Cuestick::ROTATION_SPEED * delta_time);
+                }
+                if (strafe_right)
+                {
+                    addAngleY(Cuestick::ROTATION_SPEED * delta_time);
+                }
+            }
+        }
+    }
+
+    last_right_button = right_mouse_button;
 }
