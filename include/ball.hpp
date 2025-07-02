@@ -25,12 +25,23 @@ public:
 
     static constexpr float FRICTION = 0.99f;
     static constexpr float STABLE_ROTATION_THRESHOLD = 0.05f;
+    static constexpr float STOP_TRAVEL_THRESHOLD = 0.01f;
+
+    static constexpr float ANIMATION_SPEED = 1.5f;
 
 private:
     glm::vec4 position;
     glm::vec4 velocity;
     float radius;
     bool pocketed;
+
+    bool animating;
+    float animationProgress;
+    float animationSpeed;
+    glm::vec4 anim_p0;
+    glm::vec4 anim_p1;
+    glm::vec4 anim_p2;
+
     float rotationAngle;
     glm::vec4 rotationAxis;
     int object_id;
@@ -46,8 +57,13 @@ public:
     void pocket();
     void unpocket();
 
+    void startPocketAnimation(const glm::vec2& holePosition);
+    void updatePocketAnimation(float dt);
+
     bool shouldBeDrawn() const;
     bool isPocketed() const;
+    bool hasCollision() const;
+    bool isAnimating() const;
     void resetBallTo(const glm::vec4& position);
     void resetBallTo(const glm::vec2 &position);
 

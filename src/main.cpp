@@ -302,23 +302,20 @@ int main(int argc, char* argv[])
 
         for (size_t i = 0; i < vec_balls.size(); ++i) {
             Ball & curr_ball = vec_balls[i];
-            if (curr_ball.isPocketed()) {
-                continue;
-            }
 
-            for (size_t j = i + 1; j < vec_balls.size(); ++j) {
-                Ball & other_ball = vec_balls[j];
-                if (other_ball.isPocketed()) {
-                    continue;
-                }
-                if (curr_ball.isCollidingWith(other_ball)) {
-                    curr_ball.handleCollision(other_ball);
-                }
-            }
-
-            if (curr_ball.isMoving())
+            if (curr_ball.hasCollision())
             {
-                curr_ball.reflectOnWalls(pool_table);
+                for (size_t j = i + 1; j < vec_balls.size(); ++j) {
+                    Ball & other_ball = vec_balls[j];
+                    if (curr_ball.isCollidingWith(other_ball)) {
+                        curr_ball.handleCollision(other_ball);
+                    }
+                }
+
+                if (curr_ball.isMoving())
+                {
+                    curr_ball.reflectOnWalls(pool_table);
+                }
             }
 
             curr_ball.update(g_DeltaTime);
