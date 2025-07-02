@@ -2,6 +2,8 @@
 #include "cuestick.hpp"
 #include "table.hpp"
 #include "matrices.h"
+#include "game_balls.hpp"
+#include "load_objects.hpp"
 
 
 #include <cmath>
@@ -87,15 +89,14 @@ void Cuestick::calculateShooting(float deltaTime, Ball& white_ball,const glm::ve
 
     // Update position during the shot animation
     const glm::vec4 ball_position = white_ball.getPosition();
-    this->x = ball_position.x + dir_vec.x * (Cuestick::DISTANCE + std::max(0.0f, pullBackDistance)) - sidestep_vec.x * horizontalOffset;
-    this->z = ball_position.z + dir_vec.y * (Cuestick::DISTANCE + std::max(0.0f, pullBackDistance)) - sidestep_vec.y * horizontalOffset;
+    const float backwardDistance = Cuestick::DISTANCE + std::max(0.0f, pullBackDistance);
+    position.x = ball_position.x + dir_vec.x * backwardDistance - sidestep_vec.x * horizontalOffset;
+    position.z = ball_position.z + dir_vec.y * backwardDistance - sidestep_vec.y * horizontalOffset;
 }
 
 //! Start of Sphere-Circle collision
 void Table::update(std::vector<Ball>& balls) {
-    for (size_t i = 0; i < balls.size(); ++i) {
-        Ball& ball = balls[i];
-
+    for (Ball& ball : balls) {
         if (ball.isPocketed()) {
             continue;
         }
@@ -107,11 +108,11 @@ void Table::update(std::vector<Ball>& balls) {
             float distanceSquared = dx * dx + dz * dz;
 
             if (distanceSquared < (this->holeRadius * this->holeRadius)) {
-                if (i == 0) {
+                if (ball.getObjectID() == static_cast<int>(ObjectID::WHITE_BALL)) {
                     std::cout << "White ball scratched!" << std::endl;
                     ball.resetBallTo(glm::vec2(Ball::WHITE_BALL_X, Ball::WHITE_BALL_Z));
                 } else {
-                    std::cout << "Ball " << i << " pocketed!" << std::endl;
+                    std::cout << "Ball " << ball.getObjectID() << " pocketed!" << std::endl;
                     ball.pocket();
                 }
                 

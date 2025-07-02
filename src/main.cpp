@@ -269,9 +269,7 @@ int main(int argc, char* argv[])
             if (cuestick.isAiming()) {
                 if (camera.isUsingLookAtCamera())
                 {
-                    cuestick.setAngleY(camera.getTheta());
-                    cuestick.setAngleX(0.0f);
-                    cuestick.setAngleZ(0.0f);
+                    cuestick.setAngles(0.0f, camera.getTheta(), 0.0f);
 
                     if (g_goLeft)
                     {

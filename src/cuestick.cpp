@@ -7,20 +7,21 @@
 
 constexpr float Cuestick::MAX_PULL_BACK;
 constexpr float Cuestick::MAX_HORIZONTAL_OFFSET;
+constexpr float Cuestick::DISTANCE;
 
-Cuestick::Cuestick(ObjectID id, float x, float y, float z, float angleX, float angleY, float angleZ)
+Cuestick::Cuestick(ObjectID id, const glm::vec3 &position, const glm::vec3 &angles)
     :
-    x(x), 
-    y(y), 
-    z(z), 
-    angleY(angleY),
-    angleX(angleX),
-    angleZ(angleZ),
+    position(glm::vec4(position, 1.0f)),
+    angles(angles),
     object_id(static_cast<int>(id)),
     state(CueState::Aiming),
     pullBackDistance(0.0f),
     shotPower(0.0f),
     horizontalOffset(0.0f)
+    {}
+
+Cuestick::Cuestick(ObjectID id, float x, float y, float z, float angleX, float angleY, float angleZ)
+    : Cuestick(id, glm::vec3(x, y, z), glm::vec3(angleX, angleY, angleZ))
     {}
 
 void Cuestick::startCharging() {
@@ -47,22 +48,16 @@ void Cuestick::addHorizontalOffset(float offset) {
 
 void Cuestick::update(float deltaTime, Ball& white_ball)
 {
-    const float dir_x = std::sin(angleY);
-    const float dir_z = std::cos(angleY);
-
-    const float right_x = -dir_z;
-    const float right_z = dir_x;
-
-    const glm::vec3 ball_position = white_ball.getPosition();
+    const glm::vec4 ball_position = white_ball.getPosition();
+    const glm::vec4 dir = glm::vec4(std::sin(angles.y), 0.0f, std::cos(angles.y), 0.0f);
+    const glm::vec4 right = glm::vec4(-dir.z, 0.0f, dir.x, 0.0f);
 
     switch (state) {
         case CueState::Aiming:
         {
             // In Aiming state, the cue just follows the white ball
             pullBackDistance = 0.0f;
-            this->x = ball_position.x + dir_x * Cuestick::DISTANCE + right_x * horizontalOffset;
-            this->y = Cuestick::HEIGHT;
-            this->z = ball_position.z + dir_z * Cuestick::DISTANCE + right_z * horizontalOffset;
+            position = ball_position + dir * Cuestick::DISTANCE + right * horizontalOffset;
             break;
         }
 
@@ -70,42 +65,25 @@ void Cuestick::update(float deltaTime, Ball& white_ball)
         {
             // Pull the cue stick back
             pullBackDistance = std::min(pullBackDistance + Cuestick::CHARGE_SPEED * deltaTime, Cuestick::MAX_PULL_BACK);
-            this->x = ball_position.x + dir_x * (Cuestick::DISTANCE + pullBackDistance) + right_x * horizontalOffset;
-            this->z = ball_position.z + dir_z * (Cuestick::DISTANCE + pullBackDistance) + right_z * horizontalOffset;
+            position = ball_position + dir * (Cuestick::DISTANCE + pullBackDistance) + right * horizontalOffset;
             break;
         }
         case CueState::Shooting:
         {
-            const glm::vec2 dir_vec = glm::vec2(dir_x, dir_z);
-            const glm::vec2 sidestep_vec = glm::vec2(-right_x, -right_z);
+            const glm::vec2 dir_vec = glm::vec2(dir.x, dir.z);
+            const glm::vec2 sidestep_vec = glm::vec2(-right.x, -right.z);
             calculateShooting(deltaTime, white_ball, dir_vec, sidestep_vec);
             break;
         }
     }
 }
 
-float Cuestick::getX() const {
-    return x;
+glm::vec4 Cuestick::getPosition() const {
+    return position;
 }
 
-float Cuestick::getY() const {
-    return y;
-}
-
-float Cuestick::getZ() const {
-    return z;
-}
-
-float Cuestick::getAngleX() const {
-    return angleX;
-}
-
-float Cuestick::getAngleY() const {
-    return angleY;
-}
-
-float Cuestick::getAngleZ() const {
-    return angleZ;
+glm::vec3 Cuestick::getAngles() const {
+    return angles;
 }
 
 Cuestick::CueState Cuestick::getState() const {
@@ -116,28 +94,20 @@ bool Cuestick::isAiming() const {
     return state == CueState::Aiming;
 }
 
-void Cuestick::setX(float newX) {
-    x = newX;
+void Cuestick::setPosition(const glm::vec4 &newPosition) {
+    position = newPosition;
 }
 
-void Cuestick::setY(float newY) {
-    y = newY;
+void Cuestick::setPosition(float x, float y, float z) {
+    position = glm::vec4(x, y, z, 1.0f);
 }
 
-void Cuestick::setZ(float newZ) {
-    z = newZ;
+void Cuestick::setAngles(const glm::vec3 &newAngles) {
+    angles = newAngles;
 }
 
-void Cuestick::setAngleY(float newAngleY) {
-    angleY = newAngleY;
-}
-
-void Cuestick::setAngleX(float newAngleX) {
-    angleX = newAngleX;
-}
-
-void Cuestick::setAngleZ(float newAngleZ) {
-    angleZ = newAngleZ;
+void Cuestick::setAngles(float angleX, float angleY, float angleZ) {
+    angles = glm::vec3(angleX, angleY, angleZ);
 }
 
 int Cuestick::getObjectID() const {
@@ -145,13 +115,13 @@ int Cuestick::getObjectID() const {
 }
 
 void Cuestick::addAngleY(float value) {
-    angleY += value;
+    angles.y += value;
 }
 
 void Cuestick::addAngleX(float value) {
-    angleX += value;
+    angles.x += value;
 }
 
 void Cuestick::addAngleZ(float value) {
-    angleZ += value;
+    angles.z += value;
 }

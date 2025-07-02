@@ -74,10 +74,12 @@ void drawInitialScene(const std::vector<Ball>& vec_balls, const Cuestick& cuesti
 
     if (!isWhiteBallMoving)
     {
-        const glm::mat4 t = Matrix_Translate(cuestick.getX(), cuestick.getY(), cuestick.getZ());
+        const glm::vec4& cuestick_position = cuestick.getPosition();
+        const glm::vec3& cuestick_angles = cuestick.getAngles();
+        const glm::mat4 t = Matrix_Translate(cuestick_position.x, cuestick_position.y, cuestick_position.z);
 
-        const glm::mat4 r_yaw = Matrix_Rotate_Y(cuestick.getAngleY());
-        const glm::mat4 r_pitch = Matrix_Rotate_X(cuestick.getAngleX());
+        const glm::mat4 r_yaw = Matrix_Rotate_Y(cuestick_angles.y);
+        const glm::mat4 r_pitch = Matrix_Rotate_X(cuestick_angles.x);
 
         const glm::mat4 make_cue_horizontal = Matrix_Rotate_X(Cuestick::ANGLE);
 

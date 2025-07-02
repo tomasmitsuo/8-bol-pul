@@ -3,6 +3,9 @@
 #include "table.hpp"
 #include "ball.hpp"
 
+#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
+
 enum class ObjectID : int;
 
 class Cuestick {
@@ -31,12 +34,8 @@ public:
     };
 
 private:
-    float x;        // Posição X do taco
-    float y;        // Posição Y do taco
-    float z;        // Posição Z do taco
-    float angleY;   // Ângulo de rotação em torno do eixo Y
-    float angleX;   // Ângulo de rotação em torno do eixo X
-    float angleZ;   // Ângulo de rotação em torno do eixo Z
+    glm::vec4 position;
+    glm::vec3 angles;
 
     int object_id;
 
@@ -46,6 +45,7 @@ private:
     float horizontalOffset;
 
 public:
+    Cuestick(ObjectID id, const glm::vec3 &position, const glm::vec3 &angles);
     Cuestick(ObjectID id, float x, float y, float z, float angleX, float angleY, float angleZ);
 
     void update(float deltaTime, Ball& whiteBall);
@@ -57,21 +57,15 @@ public:
 
     void addHorizontalOffset(float offset);
 
-    float getX() const;
-    float getZ() const;
-    float getY() const;
-    float getAngleY() const;
-    float getAngleX() const;
-    float getAngleZ() const;
+    glm::vec4 getPosition() const;
+    glm::vec3 getAngles() const;
     CueState getState() const;
     bool isAiming() const;
 
-    void setX(float newX);
-    void setY(float newY);
-    void setZ(float newZ);
-    void setAngleY(float newAngleY);
-    void setAngleX(float newAngleX);
-    void setAngleZ(float newAngleZ);
+    void setPosition(const glm::vec4 &newPosition);
+    void setPosition(float x, float y, float z);
+    void setAngles(const glm::vec3 &newAngles);
+    void setAngles(float angleX, float angleY, float angleZ);
 
     void addAngleY(float value);
     void addAngleX(float value);
