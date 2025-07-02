@@ -29,6 +29,10 @@ public:
 
     static constexpr float ANIMATION_SPEED = 1.0f;
 
+    static constexpr float GRAVITY = 10.0f;
+    static constexpr float RESTING_Y = BALL_HEIGHT;
+    static constexpr float BOUNCE_THRESHOLD = 0.05f;
+
 private:
     glm::vec4 position;
     glm::vec4 velocity;
