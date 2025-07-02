@@ -83,14 +83,14 @@ GLint g_bbox_min_uniform;
 GLint g_bbox_max_uniform;
 
 // DECLARAÇÃO DAS BOLAS
-GameBalls g_GameBalls(
+GameBalls gameBalls(
     Ball::RADIUS, 
     glm::vec2(Ball::WHITE_BALL_X, Ball::WHITE_BALL_Z), 
     glm::vec2(Ball::TRIANGLE_CENTER_X, Ball::TRIANGLE_CENTER_Z), 
     Ball::ROW_SPACING
 );
-Ball& white_ball = g_GameBalls.getWhiteBall();
-std::vector<Ball>& vec_balls = g_GameBalls.getBalls();
+Ball& white_ball = gameBalls.getWhiteBall();
+std::vector<Ball>& vec_balls = gameBalls.getBalls();
 
 
 Camera camera(
@@ -240,15 +240,15 @@ int main(int argc, char* argv[])
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glUseProgram(g_GpuProgramID);
 
-        if (g_ResetGame || g_MiddleMouseButtonPressed) {
-            g_GameBalls.reset();
-            white_ball = g_GameBalls.getWhiteBall();
-            vec_balls = g_GameBalls.getBalls();
+        if (g_ResetGame) {
+            gameBalls.reset();
+            white_ball = gameBalls.getWhiteBall();
+            vec_balls = gameBalls.getBalls();
             camera.setUsingPerspectiveProjection(g_UsePerspectiveProjection);
             camera.setCameraType(true);
         }
 
-        camera.updatePosition(g_DeltaTime, g_goFront, g_goBack, g_goRight, g_goLeft);
+        camera.control(g_DeltaTime, g_goFront, g_goBack, g_goRight, g_goLeft);
         const glm::mat4 view = camera.getViewMatrix();
         const glm::mat4 projection = camera.getProjectionMatrix(g_ScreenRatio);
 
@@ -323,7 +323,7 @@ int main(int argc, char* argv[])
 
         pool_table.update(vec_balls);
 
-        drawInitialScene(vec_balls, cuestick, camera, white_ball.isMoving());
+        drawInitialScene(vec_balls, cuestick, camera, white_ball.isMoving() || white_ball.isAnimating());
 
         TextRendering_ShowEulerAngles(window);
         TextRendering_ShowProjection(window);

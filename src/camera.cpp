@@ -11,10 +11,10 @@ Camera::Camera(const Ball &targetBall, float camera_height, float camera_speed, 
       nearPlane(nearPlane), farPlane(farPlane), fieldOfView(fieldOfView),
       using_perspective_projection(true), using_look_at_camera(true),
       targetBall(targetBall) {
-    updatePosition(0.0f, false, false, false, false);
+    control(0.0f, false, false, false, false);
 }
 
-void Camera::updatePosition(float delta_time, bool go_front, bool go_back, bool go_left, bool go_right) {
+void Camera::control(float delta_time, bool go_front, bool go_back, bool go_left, bool go_right) {
     upVector = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
 
     if (using_look_at_camera){
