@@ -166,8 +166,7 @@ void Ball::startPocketAnimation(const glm::vec2& holePosition)
     anim_p0 = position;
     anim_p2 = glm::vec4(holePosition.x, position.y - radius * 2.0f, holePosition.y, 1.0f);
 
-    anim_p1 = (anim_p0 + anim_p2) * 0.5f;
-    anim_p1.y -= 0.5f;
+    anim_p1 = glm::vec4(anim_p2.x, anim_p0.y, anim_p2.z, 1.0f);
 
     velocity = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 }
