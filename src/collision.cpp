@@ -102,6 +102,10 @@ void Table::update(std::vector<Ball>& balls) {
         }
 
         for (const auto& holePos : holePositions) {
+            if (ball.isAnimating())
+            {
+                continue;
+            }
             const glm::vec4 ball_position = ball.getPosition();
             float dx = ball_position.x - holePos.x;
             float dz = ball_position.z - holePos.y;
@@ -110,12 +114,10 @@ void Table::update(std::vector<Ball>& balls) {
             if (distanceSquared < (this->holeRadius * this->holeRadius)) {
                 if (ball.getObjectID() == static_cast<int>(ObjectID::WHITE_BALL)) {
                     std::cout << "White ball scratched!" << std::endl;
-                    ball.resetBallTo(glm::vec2(Ball::WHITE_BALL_X, Ball::WHITE_BALL_Z));
                 } else {
                     std::cout << "Ball " << ball.getObjectID() << " pocketed!" << std::endl;
-                    ball.pocket();
                 }
-                
+                ball.startPocketAnimation(holePos);
                 break; // Ball is handled, move to the next ball
             }
         }
