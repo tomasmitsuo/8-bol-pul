@@ -5,19 +5,19 @@
 
 
 Ball::Ball(ObjectID id, float x, float z, float vx, float vz, float radius)
-    : x(x), z(z), vx(vx), vz(vz), radius(radius), isPocketed(false),
+    : position(x, BALL_HEIGHT, z, 1.0f), velocity(vx, 0.0f, vz, 0.0f),
+      radius(radius), pocketed(false),
       rotationAngle(0.0f), rotationAxis(1.0f, 0.0f, 0.0f, 0.0f), object_id(static_cast<int>(id)) {}
 
 Ball::Ball(ObjectID id, float x, float z, float radius)
-    : x(x), z(z), vx(0.0f), vz(0.0f), radius(radius), isPocketed(false),
-      rotationAngle(0.0f), rotationAxis(1.0f, 0.0f, 0.0f, 0.0f), object_id(static_cast<int>(id)) {}
+    : Ball(id, x, z, 0.0f, 0.0f, radius) {}
 
 Ball::Ball(ObjectID id, glm::vec2 position, float radius)
     : Ball(id, position.x, position.y, 0.0f, 0.0f, radius) {}
 
 void Ball::update(float dt) 
 {
-    if (isPocketed){
+    if (pocketed){
         return;
     }
 
@@ -25,60 +25,63 @@ void Ball::update(float dt)
         float speed = getBallSpeed();
         float distanceTraveled = speed * dt;
         float angleIncrement = distanceTraveled / radius;
+        rotationAngle += angleIncrement;
 
-        glm::vec4 velocityVector(vx, 0.0f, vz, 0.0f);
-        
         if (speed > Ball::STABLE_ROTATION_THRESHOLD) {
-            const glm::vec4 rotationVector = glm::vec4(-vz, 0.0f, vx, 0.0f);
+            const glm::vec4 rotationVector = glm::vec4(-velocity.z, 0.0f, velocity.x, 0.0f);
             rotationAxis = rotationVector / norm(rotationVector);
         }
-
-        rotationAngle += angleIncrement;
     }
 
-    x += vx * dt;
-    z += vz * dt;
+    position += velocity * dt;
+    velocity *= Ball::FRICTION;
 
-    vx *= Ball::FRICTION;
-    vz *= Ball::FRICTION;
-
-    if (std::abs(vx) < 0.01f) vx = 0;
-    if (std::abs(vz) < 0.01f) vz = 0;
+    if (std::abs(velocity.x) < 0.01f) velocity.x = 0;
+    if (std::abs(velocity.y) < 0.01f) velocity.y = 0;
+    if (std::abs(velocity.z) < 0.01f) velocity.z = 0;
 }
 
 
 bool Ball::isMoving() const 
 {
-    return vx != 0 || vz != 0;
+    return velocity.x != 0 || velocity.y != 0 || velocity.z != 0;
 }
 
 void Ball::pocket()
 {
-    isPocketed = true;
-    vx = 0.0f;
-    vz = 0.0f;
+    pocketed = true;
+    velocity = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
 void Ball::unpocket()
 {
-    isPocketed = false;
-    vx = 0.0f;
-    vz = 0.0f;
+    pocketed = false;
+    velocity = glm::vec4(0.0f, 0.0f, 1.0f, 0.0f);
 }
 
 float Ball::getBallSpeed()
 {
-    return sqrt(pow(this->vx,2) + pow(this->vz,2));
+    return glm::length(velocity);
 }
 
-float Ball::getBallPositionX()
+glm::vec4 Ball::getPosition() const
 {
-    return this->x;
+    return position;
 }
 
-float Ball::getBallPositionZ()
+glm::vec4 Ball::getVelocity() const
 {
-    return this->z;
+    return velocity;
+}
+
+float Ball::getRadius() const
+{
+    return radius;
+}
+
+void Ball::applyForce(const glm::vec4& force)
+{
+    velocity += force;
 }
 
 float Ball::getRotationAngle() const
@@ -94,4 +97,28 @@ glm::vec4 Ball::getRotationAxis() const
 int Ball::getObjectID() const
 {
     return object_id;
+}
+
+bool Ball::shouldBeDrawn() const
+{
+    return !pocketed;
+}
+
+bool Ball::isPocketed() const
+{
+    return pocketed;
+}
+
+void Ball::resetBallTo(const glm::vec4& position)
+{
+    this->position = position;
+    velocity = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+    pocketed = false;
+}
+
+void Ball::resetBallTo(const glm::vec2& position)
+{
+    this->position = glm::vec4(position.x, BALL_HEIGHT, position.y, 1.0f);
+    velocity = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+    pocketed = false;
 }

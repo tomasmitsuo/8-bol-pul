@@ -14,6 +14,7 @@ public:
     static constexpr float RADIUS = 0.13f;
     static constexpr float DIAMETER = RADIUS * 2.0f;
     static constexpr float ROW_SPACING = 1.7320508076f * RADIUS; // std::sqrt(3.0f) * RADIUS;
+    static constexpr float BALL_HEIGHT = 1.1f;
 
     static constexpr float TRIANGLE_CENTER_X = Table::CENTER_X;
     static constexpr float TRIANGLE_OFFSET_Z = 0.8f;
@@ -25,16 +26,16 @@ public:
     static constexpr float FRICTION = 0.99f;
     static constexpr float STABLE_ROTATION_THRESHOLD = 0.05f;
 
-public:
-    float x, z;
-    float vx, vz;
+private:
+    glm::vec4 position;
+    glm::vec4 velocity;
     float radius;
-    bool isPocketed;
-    
+    bool pocketed;
     float rotationAngle;
     glm::vec4 rotationAxis;
     int object_id;
 
+public:
     Ball(ObjectID id, float x, float z, float vx, float vz, float radius);
     Ball(ObjectID id, float x, float z, float radius);
     Ball(ObjectID id, glm::vec2 position, float radius);
@@ -45,9 +46,17 @@ public:
     void pocket();
     void unpocket();
 
+    bool shouldBeDrawn() const;
+    bool isPocketed() const;
+    void resetBallTo(const glm::vec4& position);
+    void resetBallTo(const glm::vec2 &position);
+
     float getBallSpeed();
-    float getBallPositionX();
-    float getBallPositionZ();
+    glm::vec4 getPosition() const;
+    glm::vec4 getVelocity() const;
+    float getRadius() const;
+
+    void applyForce(const glm::vec4& force);
 
     float getRotationAngle() const;
     glm::vec4 getRotationAxis() const;

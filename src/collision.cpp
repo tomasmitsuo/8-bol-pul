@@ -14,13 +14,13 @@ void Ball::reflectOnWalls(const Table& table)
 {
     const float table_center_x = table.getCenterX();
     const float halfTableWidth = table.getWidth() / 2;
-    if (x - radius < table_center_x - halfTableWidth || x + radius > table_center_x + halfTableWidth) {
-        vx *= -FRICTION;
+    if (position.x - radius < table_center_x - halfTableWidth || position.x + radius > table_center_x + halfTableWidth) {
+        velocity.x *= -FRICTION;
     }
     const float table_center_z = table.getCenterZ();
     const float halfTableLength = table.getLength() / 2;
-    if (z - radius < table_center_z - halfTableLength || z + radius > table_center_z + halfTableLength) {
-        vz *= -FRICTION;
+    if (position.z - radius < table_center_z - halfTableLength || position.z + radius > table_center_z + halfTableLength) {
+        velocity.z *= -FRICTION;
     }
 }
 //! End of Sphere-Wall(Plane) collision
@@ -28,49 +28,37 @@ void Ball::reflectOnWalls(const Table& table)
 //! Start of Sphere-Sphere collision
 bool Ball::isCollidingWith(const Ball& other) const
 {
-    float dx = x - other.x;
-    float dz = z - other.z;
-    float distance_squared = dx * dx + dz * dz;
+    const glm::vec4 direction = position - other.position;
+    float distance_squared = dotproduct(direction, direction);
     float radius_sum = radius + other.radius;
     return distance_squared < (radius_sum * radius_sum);
 }
 
 void Ball::handleCollision(Ball& other)
 {
-    float dx = other.x - x;
-    float dz = other.z - z;
+    glm::vec4 direction = other.position - position;
 
-    float distance = std::sqrt(dx * dx + dz * dz);
+    float distance = glm::length(direction);
     if (distance == 0.0f) {
-        dx = 0.01f;
-        distance = 0.01f;
+        direction += glm::vec4(0.01f, 0.0f, 0.01f, 0.0f);
+        distance = glm::length(direction);
     }
 
-    const float nx = dx / distance;
-    const float nz = dz / distance;
+    const glm::vec4 normal = direction / distance;
 
     const float overlap = (radius + other.radius) - distance;
+    const glm::vec4 bump_direction = normal * (overlap * 0.5f);
+    position -= bump_direction;
+    other.position += bump_direction;
 
-    x -= overlap * nx * 0.5f;
-    z -= overlap * nz * 0.5f;
-    other.x += overlap * nx * 0.5f;
-    other.z += overlap * nz * 0.5f;
+    const glm::vec4 v1_normal = normal * dotproduct(velocity, normal);
+    const glm::vec4 v2_normal = normal * dotproduct(other.velocity, normal);
 
-    const float tx = -nz;
-    const float tz = nx;
+    const glm::vec4 v1_tanget = velocity - v1_normal;
+    const glm::vec4 v2_tanget = other.velocity - v2_normal;
 
-    const float v1n = vx * nx + vz * nz;
-    const float v1t = vx * tx + vz * tz;
-    const float v2n = other.vx * nx + other.vz * nz;
-    const float v2t = other.vx * tx + other.vz * tz;
-
-    const float v1n_final = v2n;
-    const float v2n_final = v1n;
-
-    vx = (v1n_final * nx) + (v1t * tx);
-    vz = (v1n_final * nz) + (v1t * tz);
-    other.vx = (v2n_final * nx) + (v2t * tx);
-    other.vz = (v2n_final * nz) + (v2t * tz);
+    velocity = v2_normal + v1_tanget;
+    other.velocity = v1_normal + v2_tanget;
 }
 //! End of Sphere-Sphere collision
 
@@ -87,11 +75,10 @@ void Cuestick::calculateShooting(float deltaTime, Ball& white_ball,const glm::ve
 
         force_vec += sidestep_vec * horizontalOffset * Cuestick::SIDESTEP_FACTOR;
 
-        force_vec = force_vec / norm(force_vec);
+        force_vec = (force_vec / norm(force_vec)) * shotPower * Cuestick::SHOT_POWER_MULTIPLIER;
 
         // Apply force to the white ball
-        white_ball.vx = force_vec.x * shotPower * Cuestick::SHOT_POWER_MULTIPLIER;
-        white_ball.vz = force_vec.y * shotPower * Cuestick::SHOT_POWER_MULTIPLIER;
+        white_ball.applyForce(glm::vec4(force_vec.x, 0.0f, force_vec.y, 0.0f));
 
         // Reset to Aiming state
         state = CueState::Aiming;
@@ -99,8 +86,9 @@ void Cuestick::calculateShooting(float deltaTime, Ball& white_ball,const glm::ve
     }
 
     // Update position during the shot animation
-    this->x = white_ball.x + dir_vec.x * (Cuestick::DISTANCE + std::max(0.0f, pullBackDistance)) - sidestep_vec.x * horizontalOffset;
-    this->z = white_ball.z + dir_vec.y * (Cuestick::DISTANCE + std::max(0.0f, pullBackDistance)) - sidestep_vec.y * horizontalOffset;
+    const glm::vec4 ball_position = white_ball.getPosition();
+    this->x = ball_position.x + dir_vec.x * (Cuestick::DISTANCE + std::max(0.0f, pullBackDistance)) - sidestep_vec.x * horizontalOffset;
+    this->z = ball_position.z + dir_vec.y * (Cuestick::DISTANCE + std::max(0.0f, pullBackDistance)) - sidestep_vec.y * horizontalOffset;
 }
 
 //! Start of Sphere-Circle collision
@@ -108,22 +96,20 @@ void Table::update(std::vector<Ball>& balls) {
     for (size_t i = 0; i < balls.size(); ++i) {
         Ball& ball = balls[i];
 
-        if (ball.isPocketed) {
+        if (ball.isPocketed()) {
             continue;
         }
 
         for (const auto& holePos : holePositions) {
-            float dx = ball.x - holePos.x;
-            float dz = ball.z - holePos.y;
+            const glm::vec4 ball_position = ball.getPosition();
+            float dx = ball_position.x - holePos.x;
+            float dz = ball_position.z - holePos.y;
             float distanceSquared = dx * dx + dz * dz;
 
             if (distanceSquared < (this->holeRadius * this->holeRadius)) {
                 if (i == 0) {
                     std::cout << "White ball scratched!" << std::endl;
-                    ball.x = Ball::WHITE_BALL_X;
-                    ball.z = Ball::WHITE_BALL_Z;
-                    ball.vx = 0.0f;
-                    ball.vz = 0.0f;
+                    ball.resetBallTo(glm::vec2(Ball::WHITE_BALL_X, Ball::WHITE_BALL_Z));
                 } else {
                     std::cout << "Ball " << i << " pocketed!" << std::endl;
                     ball.pocket();

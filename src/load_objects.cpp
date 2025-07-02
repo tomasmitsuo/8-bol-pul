@@ -53,10 +53,11 @@ void drawInitialScene(const std::vector<Ball>& vec_balls, const Cuestick& cuesti
 {
     for (const auto& ball : vec_balls)
     {
-        if (ball.isPocketed) {
+        if (!ball.shouldBeDrawn()) {
             continue;
         }
-        glm::mat4 t = Matrix_Translate(ball.x, 1.1f, ball.z);
+        const glm::vec4& position = ball.getPosition();
+        glm::mat4 t = Matrix_Translate(position.x, position.y, position.z);
         glm::mat4 r = Matrix_Rotate(-ball.getRotationAngle(), ball.getRotationAxis());
         glm::mat4 m = t * r;
         glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(m));
