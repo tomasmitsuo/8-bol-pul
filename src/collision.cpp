@@ -65,7 +65,7 @@ void Ball::handleCollision(Ball& other)
 //! End of Sphere-Sphere collision
 
 //! Start of Sphere-Ray collision
-void Cuestick::calculateShooting(Ball& white_ball)
+std::string Cuestick::calculateShooting(Ball& white_ball)
 {
     const glm::vec4 ball_center = white_ball.getPosition();
     const float ball_radius = white_ball.getRadius();
@@ -114,8 +114,6 @@ void Cuestick::calculateShooting(Ball& white_ball)
         const float t = (-quad_b - std::sqrt(delta)) / (2.0f * quad_a);
         if (t >= 0.0f && t <= 1.0f)
         {
-            std::cout << "Impact!" << std::endl;
-
             const glm::vec4 impact_point = tip_start_pos + ray_direction * t;
 
             glm::vec4 force_direction = impact_point - ball_center;
@@ -125,19 +123,22 @@ void Cuestick::calculateShooting(Ball& white_ball)
                 white_ball.applyForce(final_force);
             }
 
-            resetAim();
+            state = Cuestick::CueState::Shot;
+            return "Impact!\n";
         }
     }
     else
     {
-        std::cout << "Missed!" << std::endl;
-        resetAim();
+        state = Cuestick::CueState::Shot;
+        return "Missed!\n";
     }
+    return "";
 }
 //! End of Sphere-Ray collision
 
 //! Start of Sphere-Circle collision
-void Table::update(std::vector<Ball>& balls) {
+std::vector<std::string> Table::update(std::vector<Ball>& balls) {
+    std::vector<std::string> result;
     for (Ball& ball : balls) {
         if (ball.isPocketed()) {
             continue;
@@ -155,14 +156,15 @@ void Table::update(std::vector<Ball>& balls) {
 
             if (distanceSquared < (this->holeRadius * this->holeRadius)) {
                 if (ball.getObjectID() == static_cast<int>(ObjectID::WHITE_BALL)) {
-                    std::cout << "White ball scratched!" << std::endl;
+                    result.push_back("White ball scratched!\n");
                 } else {
-                    std::cout << "Ball " << ball.getObjectID() << " pocketed!" << std::endl;
+                    result.push_back("Ball " + std::to_string(ball.getObjectID()) + " pocketed!\n");
                 }
                 ball.startPocketAnimation(holePos);
                 break; // Ball is handled, move to the next ball
             }
         }
     }
+    return result;
 }
 //! End of Sphere-Circle collision

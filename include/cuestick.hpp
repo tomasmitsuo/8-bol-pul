@@ -4,6 +4,7 @@
 #include "ball.hpp"
 #include "camera.hpp"
 
+#include <string>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
@@ -32,7 +33,8 @@ public:
     {
         Aiming,
         Charging,
-        Shooting
+        Shooting,
+        Shot
     };
 
 private:
@@ -51,16 +53,18 @@ private:
 
     bool last_right_button;
 
+    float last_pullBackDistance;
+
     void clampAimingOffsets();
 
 public:
     Cuestick(ObjectID id, const glm::vec3 &position, const glm::vec3 &angles, const float followRadius);
     Cuestick(ObjectID id, float x, float y, float z, float angleX, float angleY, float angleZ, float followRadius);
 
-    void update(float deltaTime, Ball& whiteBall, const Camera& camera);
+    std::string update(float deltaTime, Ball& whiteBall, const Camera& camera);
     void control(float delta_time, bool right_mouse_button, bool middle_mouse_button, bool go_front, bool go_back, bool go_left, bool go_right, bool strafe_left, bool strafe_right, const Camera &camera, const Ball &white_ball);
 
-    void calculateShooting(Ball &white_ball);
+    std::string calculateShooting(Ball &white_ball);
 
     void startCharging();
     void shoot();
@@ -72,6 +76,7 @@ public:
     glm::vec4 getPosition() const;
     glm::vec3 getAngles() const;
     CueState getState() const;
+    float getLastPullBackDistance() const;
     bool isAiming() const;
 
     void setPosition(const glm::vec4 &newPosition);
