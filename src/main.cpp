@@ -227,8 +227,6 @@ int main(int argc, char* argv[])
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
 
-    float last_frame_time = (float)glfwGetTime();
-
     std::vector<std::string> pool_outcome;
     std::string pool_outcome_str = "Pool Table Outcome: ";
     pool_outcome.push_back(pool_outcome_str);
@@ -251,6 +249,8 @@ int main(int argc, char* argv[])
     bool display_info_text = true;
     bool last_toggle_info_text = g_ToggleInfoText;
 
+
+    float last_frame_time = (float)glfwGetTime();
     // Ficamos em um loop infinito, renderizando, até que o usuário feche a janela
     while (!glfwWindowShouldClose(window))
     {
