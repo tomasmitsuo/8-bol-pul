@@ -41,6 +41,7 @@ extern bool g_goStrafeLeft;
 extern bool g_goStrafeRight;
 
 extern bool g_ResetGame;
+extern bool g_ToggleInfoText;
 
 extern Camera camera;
 
@@ -237,6 +238,8 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
 
     g_goStrafeLeft = glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS; // Strafe Left
     g_goStrafeRight = glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS ; // Strafe Right
+
+    g_ToggleInfoText = glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS; // Toggle info text
 
     /*
     // ======================

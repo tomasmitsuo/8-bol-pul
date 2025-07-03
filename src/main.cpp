@@ -137,6 +137,7 @@ bool g_goStrafeLeft = false;
 bool g_goStrafeRight = false;
 
 bool g_ResetGame = false;
+bool g_ToggleInfoText = false;
 
 int main(int argc, char* argv[])
 {   
@@ -232,6 +233,23 @@ int main(int argc, char* argv[])
     std::string pool_outcome_str = "Pool Table Outcome: ";
     pool_outcome.push_back(pool_outcome_str);
     std::string cuestick_str = "";
+    const std::vector<std::string> start_string = {
+        "Welcome to the 8-ball pool!",
+        "Press 'R' to reset the game.",
+        "Press 'I' to toggle this text.",
+        "Press 'Right Click' to shoot the cue ball.",
+        "Press 'Middle Click' to reset the cuestick offset.",
+        "Press 'Space' to toggle camera type (LookAt/Free).",
+        "LookAt Camera controls:",
+        "Use 'W', 'A', 'S', 'D' to move the cuestick offset.",
+        "Use 'Left Click' to aim the cuestick.",
+        "Free Camera controls:",
+        "Use 'W', 'A', 'S', 'D' to move the camera.",
+        "Use 'Q' and 'E' to spin the cuestick left/right.",
+    };
+
+    bool display_info_text = true;
+    bool last_toggle_info_text = g_ToggleInfoText;
 
     // Ficamos em um loop infinito, renderizando, até que o usuário feche a janela
     while (!glfwWindowShouldClose(window))
@@ -325,6 +343,23 @@ int main(int argc, char* argv[])
 
         const std::string camera_type = camera.isUsingLookAtCamera() ? "LookAt" : "Free";
         TextRendering_PrintString(window, "Camera Type: " + camera_type, -1.0f+charwidth/10, 1.0f-lineheight, 1.0f);
+
+        if (display_info_text)
+        {
+            const float center_width = -1.0f + charwidth / 10;
+            const float height_start = lineheight*start_string.size() / 2;
+            for (int i = 0; i < start_string.size(); ++i)
+            {
+                const std::string& line = start_string[i];
+                const float center_height = height_start - (10 * i * lineheight) / 10;
+                TextRendering_PrintString(window, line, center_width, center_height, 1.0f);
+            }
+        }
+
+        if (g_ToggleInfoText && !last_toggle_info_text) {
+            display_info_text = !display_info_text;
+        }
+        last_toggle_info_text = g_ToggleInfoText;
 
         TextRendering_ShowFramesPerSecond(window);
         glfwSwapBuffers(window);
