@@ -299,7 +299,7 @@ int main(int argc, char* argv[])
 
         const std::vector<std::string> new_outcome = pool_table.update(vec_balls);
 
-        drawInitialScene(vec_balls, cuestick, camera, white_ball.isMoving() || white_ball.isAnimating());
+        drawInitialScene(vec_balls, cuestick, camera);
 
         // TextRendering_ShowEulerAngles(window);
         // TextRendering_ShowProjection(window);
