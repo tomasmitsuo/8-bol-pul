@@ -49,7 +49,7 @@ void loadAllObjects(void)
 
 
 
-void drawInitialScene(const std::vector<Ball>& vec_balls, const Cuestick& cuestick, const Camera& camera, bool isWhiteBallMoving)
+void drawInitialScene(const std::vector<Ball>& vec_balls, const Cuestick& cuestick, const Camera& camera)
 {
     for (const auto& ball : vec_balls)
     {
@@ -72,7 +72,7 @@ void drawInitialScene(const std::vector<Ball>& vec_balls, const Cuestick& cuesti
     glUniform1i(g_object_id_uniform, static_cast<int>(ObjectID::BALL3));
     DrawVirtualObject("the_pooltable");
 
-    if (!isWhiteBallMoving)
+    if (cuestick.shouldBeDrawn())
     {
         const glm::vec4& cuestick_position = cuestick.getPosition();
         const glm::vec3& cuestick_angles = cuestick.getAngles();

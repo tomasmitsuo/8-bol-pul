@@ -52,6 +52,7 @@ private:
     const float followRadius;
 
     bool last_right_button;
+    bool should_track_ball;
 
     float last_pullBackDistance;
 
@@ -78,6 +79,7 @@ public:
     CueState getState() const;
     float getLastPullBackDistance() const;
     bool isAiming() const;
+    bool shouldBeDrawn() const;
 
     void setPosition(const glm::vec4 &newPosition);
     void setPosition(float x, float y, float z);

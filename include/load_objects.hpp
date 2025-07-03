@@ -27,4 +27,4 @@ enum class ObjectID : int {
 
 void loadAllTextures(void);
 void loadAllObjects(void);
-void drawInitialScene(const std::vector<Ball>& vec_balls, const Cuestick& cuestick, const Camera& camera, bool isWhiteBallMoving);
+void drawInitialScene(const std::vector<Ball>& vec_balls, const Cuestick& cuestick, const Camera& camera);

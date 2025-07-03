@@ -24,6 +24,7 @@ Cuestick::Cuestick(ObjectID id, const glm::vec3 &position, const glm::vec3 &angl
     verticalOffset(0.0f),
     followRadius(followRadius),
     last_right_button(false),
+    should_track_ball(true),
     last_pullBackDistance(0.0f)
     {}
 
@@ -80,6 +81,8 @@ void Cuestick::clampAimingOffsets()
 
 std::string Cuestick::update(float deltaTime, Ball& white_ball, const Camera& camera)
 {
+    should_track_ball = !(white_ball.isMoving() || white_ball.isAnimating());
+    // should_track_ball = true; // Fun for gameplay testing
     switch (state)
     {
     case CueState::Aiming:
@@ -94,7 +97,8 @@ std::string Cuestick::update(float deltaTime, Ball& white_ball, const Camera& ca
         pullBackDistance -= Cuestick::SHOOT_SPEED * deltaTime;
         break;
     case CueState::Shot:
-        if (!white_ball.isMoving()) resetAim();
+        if (should_track_ball)
+            resetAim();
         break;
     }
 
@@ -141,6 +145,10 @@ bool Cuestick::isAiming() const {
     return state == CueState::Aiming;
 }
 
+bool Cuestick::shouldBeDrawn() const {
+    return should_track_ball;
+}
+
 void Cuestick::setPosition(const glm::vec4 &newPosition) {
     position = newPosition;
 }
@@ -176,7 +184,8 @@ void Cuestick::addAngleZ(float value) {
 
 void Cuestick::control(float delta_time, bool right_mouse_button, bool middle_mouse_button, bool go_front, bool go_back, bool go_left, bool go_right, bool strafe_left, bool strafe_right, const Camera &camera, const Ball &white_ball)
 {
-    if (!white_ball.isMoving()) {
+    if (shouldBeDrawn())
+    {
         // Check for right-click PRESS event
         if (right_mouse_button && !last_right_button) {
             startCharging();
