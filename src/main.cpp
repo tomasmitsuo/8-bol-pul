@@ -14,6 +14,7 @@
 #include <algorithm>
 #include <cmath>
 #include <iostream>
+#include <deque>
 
 // Headers das bibliotecas OpenGL
 #include <glad/glad.h>   // Criação de contexto OpenGL 3.3
@@ -227,9 +228,9 @@ int main(int argc, char* argv[])
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
 
-    std::vector<std::string> pool_outcome;
+    constexpr size_t MAX_OUTCOMES_DISPLAYED = 10;
+    std::deque<std::string> pool_outcome;
     std::string pool_outcome_str = "Pool Table Outcome: ";
-    pool_outcome.push_back(pool_outcome_str);
     std::string cuestick_str = "";
     const std::vector<std::string> start_string = {
         "Welcome to the 8-ball pool!",
@@ -328,17 +329,25 @@ int main(int argc, char* argv[])
         }
         TextRendering_PrintString(window, cuestick_str, -1.0f+charwidth/10, -1.0f+22*lineheight/10, 1.0f);
 
-        if (new_outcome.size() > 0)
+        for (const auto& outcome : new_outcome)
         {
-            pool_outcome.clear();
-            pool_outcome.push_back(pool_outcome_str);
-            for (const auto& outcome : new_outcome) {
-                pool_outcome.push_back(outcome);
-            }
+            pool_outcome.push_front(outcome);
+        }
+        while (pool_outcome.size() >= MAX_OUTCOMES_DISPLAYED) {
+            pool_outcome.pop_back();
         }
         const size_t num_outcomes = pool_outcome.size();
-        for (const auto& outcome : pool_outcome) {
-            TextRendering_PrintString(window, outcome, 1.0f - outcome.size() * charwidth, -1.0f + (2 + 10*(num_outcomes-1))* lineheight / 10, 1.0f);
+        {
+            const float width_offset = 1.0f - pool_outcome_str.size() * charwidth;
+            const float height_offset = -1.0f + (2 + 10 * num_outcomes) * lineheight / 10;
+            TextRendering_PrintString(window, pool_outcome_str, width_offset, height_offset, 1.0f);
+        }
+        for (size_t i = 0; i < num_outcomes; ++i)
+        {
+            const std::string outcome = std::to_string(i+1) + ". " + pool_outcome[i];
+            const float width_offset = 1.0f - outcome.size() * charwidth;
+            const float height_offset = -1.0f + (2 + 10 * i) * lineheight / 10;
+            TextRendering_PrintString(window, outcome, width_offset, height_offset, 1.0f);
         }
 
         const std::string camera_type = camera.isUsingLookAtCamera() ? "LookAt" : "Free";
@@ -348,7 +357,7 @@ int main(int argc, char* argv[])
         {
             const float center_width = -1.0f + charwidth / 10;
             const float height_start = lineheight*start_string.size() / 2;
-            for (int i = 0; i < start_string.size(); ++i)
+            for (size_t i = 0; i < start_string.size(); ++i)
             {
                 const std::string& line = start_string[i];
                 const float center_height = height_start - (10 * i * lineheight) / 10;

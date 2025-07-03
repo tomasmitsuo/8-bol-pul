@@ -94,7 +94,7 @@ std::string Cuestick::update(float deltaTime, Ball& white_ball, const Camera& ca
         pullBackDistance -= Cuestick::SHOOT_SPEED * deltaTime;
         break;
     case CueState::Shot:
-        if (!white_ball.isMoving()) state = CueState::Aiming;
+        if (!white_ball.isMoving()) resetAim();
         break;
     }
 
