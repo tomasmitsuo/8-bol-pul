@@ -228,7 +228,10 @@ int main(int argc, char* argv[])
 
     float last_frame_time = (float)glfwGetTime();
 
-    bool last_right_button = g_RightMouseButtonPressed;
+    std::vector<std::string> pool_outcome;
+    std::string pool_outcome_str = "Pool Table Outcome: ";
+    pool_outcome.push_back(pool_outcome_str);
+    std::string cuestick_str = "";
 
     // Ficamos em um loop infinito, renderizando, até que o usuário feche a janela
     while (!glfwWindowShouldClose(window))
@@ -273,14 +276,56 @@ int main(int argc, char* argv[])
        
         gameBalls.update(g_DeltaTime, pool_table);
 
-        cuestick.update(g_DeltaTime, white_ball, camera);
+        const std::string new_cuestick_str = cuestick.update(g_DeltaTime, white_ball, camera);
 
-        pool_table.update(vec_balls);
+        const std::vector<std::string> new_outcome = pool_table.update(vec_balls);
 
         drawInitialScene(vec_balls, cuestick, camera, white_ball.isMoving() || white_ball.isAnimating());
 
-        TextRendering_ShowEulerAngles(window);
-        TextRendering_ShowProjection(window);
+        // TextRendering_ShowEulerAngles(window);
+        // TextRendering_ShowProjection(window);
+        const float lineheight = TextRendering_LineHeight(window);
+        const float charwidth = TextRendering_CharWidth(window);
+        std::string cuestate_str = "Cuestick State: ";
+        switch (cuestick.getState()) {
+            case Cuestick::CueState::Aiming:
+                cuestate_str += "Aiming";
+                cuestick_str = "";
+                break;
+            case Cuestick::CueState::Charging:
+                cuestate_str += "Charging";
+                break;
+            case Cuestick::CueState::Shooting:
+                cuestate_str += "Shooting";
+                break;
+            case Cuestick::CueState::Shot:
+                cuestate_str += "Shot";
+                break;
+        }
+        TextRendering_PrintString(window, cuestate_str, -1.0f+charwidth/10, -1.0f+2*lineheight/10, 1.0f);
+        cuestate_str = "Pull Back Distance: " + std::to_string(cuestick.getLastPullBackDistance());
+        TextRendering_PrintString(window, cuestate_str, -1.0f+charwidth/10, -1.0f+12*lineheight/10, 1.0f);
+        if (new_cuestick_str.size() > 0) {
+            cuestick_str = new_cuestick_str;
+        }
+        TextRendering_PrintString(window, cuestick_str, -1.0f+charwidth/10, -1.0f+22*lineheight/10, 1.0f);
+
+        if (new_outcome.size() > 0)
+        {
+            pool_outcome.clear();
+            pool_outcome.push_back(pool_outcome_str);
+            for (const auto& outcome : new_outcome) {
+                pool_outcome.push_back(outcome);
+            }
+        }
+        const size_t num_outcomes = pool_outcome.size();
+        for (const auto& outcome : pool_outcome) {
+            TextRendering_PrintString(window, outcome, 1.0f - outcome.size() * charwidth, -1.0f + (2 + 10*(num_outcomes-1))* lineheight / 10, 1.0f);
+        }
+
+        const std::string camera_type = camera.isUsingLookAtCamera() ? "LookAt" : "Free";
+        TextRendering_PrintString(window, "Camera Type: " + camera_type, -1.0f+charwidth/10, 1.0f-lineheight, 1.0f);
+
         TextRendering_ShowFramesPerSecond(window);
         glfwSwapBuffers(window);
         glfwPollEvents();

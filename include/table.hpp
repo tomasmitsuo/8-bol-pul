@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <glm/vec2.hpp>
+#include <string>
 
 class Ball; // Forward declaration to avoid circular dependency
 
@@ -26,7 +27,7 @@ private:
 public:
     Table(float centerX, float centerZ, float width, float length, float holeRadius);
 
-    void update(std::vector<Ball>& balls);
+    std::vector<std::string> update(std::vector<Ball>& balls);
 
     float getCenterX() const;
     float getCenterZ() const;

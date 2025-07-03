@@ -23,7 +23,8 @@ Cuestick::Cuestick(ObjectID id, const glm::vec3 &position, const glm::vec3 &angl
     horizontalOffset(0.0f),
     verticalOffset(0.0f),
     followRadius(followRadius),
-    last_right_button(false)
+    last_right_button(false),
+    last_pullBackDistance(0.0f)
     {}
 
 Cuestick::Cuestick(ObjectID id, float x, float y, float z, float angleX, float angleY, float angleZ, float followRadius)
@@ -34,7 +35,6 @@ void Cuestick::startCharging() {
     if (state == CueState::Aiming) {
         state = CueState::Charging;
         pullBackDistance = 0.0f;
-        std::cout << "State: Charging" << std::endl;
     }
 }
 
@@ -42,7 +42,6 @@ void Cuestick::shoot() {
     if (state == CueState::Charging) {
         state = CueState::Shooting;
         shotPower = pullBackDistance;
-        std::cout << "State: Shooting with Power: " << shotPower << std::endl;
     }
 }
 
@@ -63,6 +62,7 @@ void Cuestick::resetAim()
     state = CueState::Aiming;
     horizontalOffset = 0.0f;
     verticalOffset = 0.0f;
+    last_pullBackDistance = 0.0f;
 }
 
 void Cuestick::clampAimingOffsets()
@@ -78,18 +78,23 @@ void Cuestick::clampAimingOffsets()
     }
 }
 
-void Cuestick::update(float deltaTime, Ball& white_ball, const Camera& camera)
+std::string Cuestick::update(float deltaTime, Ball& white_ball, const Camera& camera)
 {
     switch (state)
     {
     case CueState::Aiming:
         pullBackDistance = 0.0f;
+        last_pullBackDistance = 0.0f;
         break;
     case CueState::Charging:
+        last_pullBackDistance = pullBackDistance;
         pullBackDistance = std::min(pullBackDistance + Cuestick::CHARGE_SPEED * deltaTime, Cuestick::MAX_PULL_BACK);
         break;
     case CueState::Shooting:
         pullBackDistance -= Cuestick::SHOOT_SPEED * deltaTime;
+        break;
+    case CueState::Shot:
+        if (!white_ball.isMoving()) state = CueState::Aiming;
         break;
     }
 
@@ -106,12 +111,14 @@ void Cuestick::update(float deltaTime, Ball& white_ball, const Camera& camera)
         setAngles(0.0f, camera.getTheta(), 0.0f);
     }
     
+    std::string outcome = "";
     if (state == CueState::Shooting)
     {
-        calculateShooting(white_ball);
+        outcome = calculateShooting(white_ball);
     }
 
     prev_pullBackDistance = pullBackDistance;
+    return outcome;
 }
 
 glm::vec4 Cuestick::getPosition() const {
@@ -124,6 +131,10 @@ glm::vec3 Cuestick::getAngles() const {
 
 Cuestick::CueState Cuestick::getState() const {
     return state;
+}
+
+float Cuestick::getLastPullBackDistance() const {
+    return last_pullBackDistance;
 }
 
 bool Cuestick::isAiming() const {
