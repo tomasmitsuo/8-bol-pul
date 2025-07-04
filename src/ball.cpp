@@ -44,7 +44,9 @@ void Ball::update(float dt)
             }
         }
     }
-    velocity.y -= Ball::GRAVITY * dt;
+    if (position.y > RESTING_Y) {
+        velocity.y -= Ball::GRAVITY * dt;
+    }
 
     position += velocity * dt;
 
