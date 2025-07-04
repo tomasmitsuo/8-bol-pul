@@ -16,13 +16,32 @@ void Ball::reflectOnWalls(const float deltaTime, const Table& table)
 {
     const float table_center_x = table.getCenterX();
     const float halfTableWidth = table.getWidth() / 2;
-    if (position.x - radius < table_center_x - halfTableWidth || position.x + radius > table_center_x + halfTableWidth) {
+    const float left_wall = table_center_x - halfTableWidth;
+    const float right_wall = table_center_x + halfTableWidth;
+    
+    if (position.x - radius < left_wall)
+    {
         velocity.x *= -std::pow(FRICTION, deltaTime);
+        position.x = left_wall + radius;
+    }
+    if (position.x + radius > right_wall)
+    {
+        velocity.x *= -std::pow(FRICTION, deltaTime);
+        position.x = right_wall - radius;
     }
     const float table_center_z = table.getCenterZ();
     const float halfTableLength = table.getLength() / 2;
-    if (position.z - radius < table_center_z - halfTableLength || position.z + radius > table_center_z + halfTableLength) {
+    const float back_wall = table_center_z - halfTableLength;
+    const float front_wall = table_center_z + halfTableLength;
+    if (position.z - radius < back_wall)
+    {
         velocity.z *= -std::pow(FRICTION, deltaTime);
+        position.z = back_wall + radius;
+    }
+    if (position.z + radius > front_wall)
+    {
+        velocity.z *= -std::pow(FRICTION, deltaTime);
+        position.z = front_wall - radius;
     }
 }
 //! End of Sphere-Wall(Plane/Box) collision
