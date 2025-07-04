@@ -9,7 +9,7 @@ Ball::Ball(ObjectID id, float x, float z, float vx, float vz, float radius)
     : position(x, BALL_HEIGHT, z, 1.0f), velocity(vx, 0.0f, vz, 0.0f),
       radius(radius), pocketed(false),
       animating(false), animationProgress(0.0f), animationSpeed(ANIMATION_SPEED),
-      anim_p0(0.0f, 0.0f, 0.0f, 1.0f), anim_p1(0.0f, 0.0f, 0.0f, 1.0f), anim_p2(0.0f, 0.0f, 0.0f, 1.0f),
+      anim_control_points(),
       rotationAngle(0.0f), rotationAxis(1.0f, 0.0f, 0.0f, 0.0f),
       object_id(static_cast<int>(id)) {}
 
@@ -156,13 +156,18 @@ void Ball::resetBallTo(const glm::vec2& position)
     pocketed = false;
 }
 
-glm::vec4 calculateBezierPoint(float t, const glm::vec4& p0, const glm::vec4& p1, const glm::vec4& p2) {
+glm::vec4 calculateBezierPoint(float t, const CubicBezierPoints& points) {
     float u = 1.0f - t;
-    float uu = u * u;
-    glm::vec4 p = uu * p0;
-    p += 2.0f * u * t * p1;
     float tt = t * t;
-    p += tt * p2;
+    float uu = u * u;
+    float uuu = uu * u;
+    float ttt = tt * t;
+
+    glm::vec4 p = uuu * points[0];  // (1-t)^3 * p0
+    p += 3.0f * uu * t * points[1]; // 3 * (1-t)^2 * t * p1
+    p += 3.0f * u * tt * points[2]; // 3 * (1-t) * t^2 * p2
+    p += ttt * points[3];           // t^3 * p3
+
     return p;
 }
 
@@ -174,11 +179,15 @@ void Ball::startPocketAnimation(const glm::vec2& holePosition)
 
     animating = true;
     animationProgress = 0.0f;
-    anim_p0 = position;
-    anim_p2 = glm::vec4(holePosition.x, position.y - radius * 2.0f, holePosition.y, 1.0f);
 
-    anim_p1 = glm::vec4(anim_p2.x, anim_p0.y, anim_p2.z, 1.0f);
+    anim_control_points[0] = position;
 
+    anim_control_points[1] = glm::vec4((position.x + holePosition.x) * 0.5f, position.y, (position.z + holePosition.y) * 0.5f, 1.0f);
+    
+    anim_control_points[2] = glm::vec4(holePosition.x, position.y - radius * 0.5f, holePosition.y, 1.0f);
+    
+    anim_control_points[3] = glm::vec4(holePosition.x, position.y - radius * 4.0f, holePosition.y, 1.0f);
+    
     velocity = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
@@ -201,7 +210,7 @@ void Ball::updatePocketAnimation(float dt)
         return;
     }
 
-    glm::vec4 bezierPoint = calculateBezierPoint(animationProgress, anim_p0, anim_p1, anim_p2);
+    glm::vec4 bezierPoint = calculateBezierPoint(animationProgress, anim_control_points);
     position = glm::vec4(bezierPoint.x, bezierPoint.y, bezierPoint.z, 1.0f);
     velocity = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f); // Stop the ball during animation
 }
