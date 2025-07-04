@@ -2,12 +2,15 @@
 
 #include <string>
 #include <cmath>
+#include <array>
 
 #include <glm/vec4.hpp>
 
 #include "table.hpp"
 
 enum class ObjectID : int;
+
+typedef std::array<glm::vec4, 4> CubicBezierPoints;
 
 class Ball {
 public:
@@ -42,9 +45,7 @@ private:
     bool animating;
     float animationProgress;
     float animationSpeed;
-    glm::vec4 anim_p0;
-    glm::vec4 anim_p1;
-    glm::vec4 anim_p2;
+    CubicBezierPoints anim_control_points;
 
     float rotationAngle;
     glm::vec4 rotationAxis;
