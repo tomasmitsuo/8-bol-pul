@@ -65,7 +65,7 @@ void GameBalls::update(float deltaTime, const Table &table)
 
             if (curr_ball.isMoving())
             {
-                curr_ball.reflectOnWalls(table);
+                curr_ball.reflectOnWalls(deltaTime, table);
             }
         }
 

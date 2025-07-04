@@ -26,7 +26,7 @@ public:
     static constexpr float WHITE_BALL_X = TRIANGLE_CENTER_X;
     static constexpr float WHITE_BALL_Z = Table::CENTER_Z + Table::LENGTH / 3 - TRIANGLE_OFFSET_Z;
 
-    static constexpr float FRICTION = 0.99f;
+    static constexpr float FRICTION = 0.5471566424f; // std::pow(0.99f, 60);
     static constexpr float STABLE_ROTATION_THRESHOLD = 0.05f;
     static constexpr float STOP_TRAVEL_THRESHOLD = 0.01f;
 
@@ -57,7 +57,7 @@ public:
     Ball(ObjectID id, glm::vec2 position, float radius);
 
     void update(float dt);
-    void reflectOnWalls(const Table& table);
+    void reflectOnWalls(const float deltaTime, const Table& table);
     bool isMoving() const;
     void pocket();
     void unpocket();
