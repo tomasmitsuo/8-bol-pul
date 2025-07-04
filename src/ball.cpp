@@ -50,8 +50,8 @@ void Ball::update(float dt)
 
     position += velocity * dt;
 
-    velocity.x *= Ball::FRICTION;
-    velocity.z *= Ball::FRICTION;
+    velocity.x *= std::pow(Ball::FRICTION, dt);
+    velocity.z *= std::pow(Ball::FRICTION, dt);
     if (position.y < RESTING_Y) 
     {
         position.y = RESTING_Y;
