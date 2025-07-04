@@ -54,9 +54,8 @@ void Ball::update(float dt)
     velocity.z *= std::pow(Ball::FRICTION, dt);
     if (position.y < RESTING_Y) 
     {
-        position.y = RESTING_Y;
-
         velocity.y = -velocity.y * Table::BOUNCINESS;
+        position.y = RESTING_Y;
     }
 
     if (std::abs(velocity.x) < Ball::STOP_TRAVEL_THRESHOLD) velocity.x = 0.0f;
