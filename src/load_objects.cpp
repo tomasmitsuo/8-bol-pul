@@ -4,11 +4,68 @@
 
 #include "matrices.h"
 #include "ball.hpp"
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <unordered_map>
 
 extern GLint g_model_uniform;
 extern float g_AngleX;
 extern float g_AngleY;
 extern GLint g_object_id_uniform;
+extern GLuint g_GpuProgramID;
+
+GLuint table_texture_ids[2];
+
+struct Material {
+    std::string name;
+    std::string texturePath;  // map_Kd
+};
+
+std::unordered_map<std::string, Material> loadMTL(const std::string& filename) 
+{
+    std::unordered_map<std::string, Material> materials;
+    std::ifstream file(filename);
+    if (!file.is_open()) {
+        std::cerr << "Erro ao abrir " << filename << std::endl;
+        return materials;
+    }
+
+    std::string line;
+    Material currentMaterial;
+
+    while (std::getline(file, line)) 
+    {
+        std::istringstream iss(line);
+        std::string token;
+        iss >> token;
+
+        if (token == "newmtl") 
+        {
+            if (!currentMaterial.name.empty()) 
+            {
+                materials[currentMaterial.name] = currentMaterial;
+            }
+            currentMaterial = Material(); // cria novo material limpo
+            iss >> currentMaterial.name;
+        }
+        else if (token == "map_Kd") 
+        {
+            iss >> currentMaterial.texturePath;
+        }
+    }
+
+    // Adiciona o último material
+    if (!currentMaterial.name.empty()) 
+    {
+        materials[currentMaterial.name] = currentMaterial;
+    }
+
+    return materials;
+}
+
+
 
 void loadAllTextures(void)
 {
@@ -28,8 +85,21 @@ void loadAllTextures(void)
     LoadTextureImage("../../data/textures/ball_13.png");      // TextureImage13
     LoadTextureImage("../../data/textures/ball_14.png");      // TextureImage14
     LoadTextureImage("../../data/textures/ball_15.png");      // TextureImage15
-}
 
+    // TODO: ARRUMAR O LOAD DE TEXTURAS
+
+    // CARREGA o MTL da mesa
+    auto materials = loadMTL("../../data/objs/pooltable.mtl");
+    for (const auto& [name, mat] : materials) 
+    {
+        std::string fullPath = "../../data/" + mat.texturePath;
+        LoadTextureImage(fullPath.c_str()); // TableTexture0 e TableTexture1
+    }
+
+    // TEXTURA DO TACO
+    LoadTextureImage("../../data/textures/darkwood.png"); // TextureImage18
+    
+}
 
 
 void loadAllObjects(void)
@@ -65,11 +135,10 @@ void drawInitialScene(const std::vector<Ball>& vec_balls, const Cuestick& cuesti
         DrawVirtualObject("the_ball");
     }
 
-
     // Desenhamos a mesa
     glm::mat4 model_table = Matrix_Translate(Table::CENTER_X, 0.0f, Table::CENTER_Z);
     glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model_table));
-    glUniform1i(g_object_id_uniform, static_cast<int>(ObjectID::BALL3));
+    glUniform1i(g_object_id_uniform, static_cast<int>(ObjectID::TABLE)); // TODO: AQUI´É CARREGADA A TEXTURA DA MESA
     DrawVirtualObject("the_pooltable");
 
     if (cuestick.shouldBeDrawn())

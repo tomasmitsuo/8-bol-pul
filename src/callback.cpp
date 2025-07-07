@@ -57,6 +57,7 @@ void FramebufferSizeCallback(GLFWwindow* window, int width, int height)
 double g_LastCursorPosX, g_LastCursorPosY;
 
 
+
 // Função callback chamada sempre que o usuário aperta algum dos botões do mouse
 void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {

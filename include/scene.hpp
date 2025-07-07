@@ -32,6 +32,23 @@
 // Headers locais, definidos na pasta "include/"
 #include "utils.h"
 
+
+struct SubObjectTable
+{
+    GLuint first_index;
+    GLuint num_indices;
+    int material_id;
+};
+
+struct SceneObjectTable
+{
+    GLuint vertex_array_object_id;
+    GLuint rendering_mode;
+    std::vector<SubObjectTable> subobjects; // Partes do objeto com materiais diferentes
+    glm::vec3 bbox_min;
+    glm::vec3 bbox_max;
+};
+
 // Definimos uma estrutura que armazenará dados necessários para renderizar
 // cada objeto da cena virtual.
 struct SceneObject

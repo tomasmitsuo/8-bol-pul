@@ -1,6 +1,6 @@
 # Blender v2.79 (sub 0) OBJ File: 'pooltable.blend'
 # www.blender.org
-#mtllib pooltable.mtl
+mtllib pooltable.mtl
 g the_pooltable
 
 v 3.770489 1.017418 5.475751
