@@ -1,4 +1,3 @@
-// TODO: CRIAR UMA CLASSE PARA A CAMERA
 #pragma once
 
 #include <glm/vec4.hpp>

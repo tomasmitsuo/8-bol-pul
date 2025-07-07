@@ -29,6 +29,12 @@ extern GLint g_bbox_min_uniform;
 extern GLint g_bbox_max_uniform;
 extern GLuint g_NumLoadedTextures;
 
+extern GLint g_material_id_uniform; // para o mtl
+
+// decide se será gouraud ou phong
+extern GLint interpolation_mode_loc;
+
+
 // Esta função cria um programa de GPU, o qual contém obrigatoriamente um
 // Vertex Shader e um Fragment Shader.
 GLuint CreateGpuProgram(GLuint vertex_shader_id, GLuint fragment_shader_id)
@@ -87,7 +93,6 @@ void LoadShadersFromFiles()
     GLuint vertex_shader_id = LoadShader_Vertex("../../shaders/shader_vertex.glsl");
     GLuint fragment_shader_id = LoadShader_Fragment("../../shaders/shader_fragment.glsl");
 
-
     if ( g_GpuProgramID != 0 )
         glDeleteProgram(g_GpuProgramID);
 
@@ -98,6 +103,11 @@ void LoadShadersFromFiles()
     g_object_id_uniform  = glGetUniformLocation(g_GpuProgramID, "object_id"); // Variável "object_id" em shader_fragment.glsl
     g_bbox_min_uniform   = glGetUniformLocation(g_GpuProgramID, "bbox_min");
     g_bbox_max_uniform   = glGetUniformLocation(g_GpuProgramID, "bbox_max");
+    
+    g_material_id_uniform = glGetUniformLocation(g_GpuProgramID, "material_id");
+
+    // INFORMAÇÕES DE ILUMINAÇÃO
+    interpolation_mode_loc = glGetUniformLocation(g_GpuProgramID, "interpolation_mode");
 
     // Variáveis em "shader_fragment.glsl" para acesso das imagens de textura
     glUseProgram(g_GpuProgramID);
@@ -117,12 +127,11 @@ void LoadShadersFromFiles()
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage13"), 13);
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage14"), 14);
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage15"), 15);
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage16"), 16);
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage17"), 17);
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage18"), 18);
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage19"), 19);
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage20"), 20);
 
+    // preciso dar um jeito de ligar o material_id aqui
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TableTexture0"), 16);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TableTexture1"), 17);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage18"), 18);
     glUseProgram(0);
 }
 
@@ -260,4 +269,53 @@ void LoadTextureImage(const char* filename)
     stbi_image_free(data);
 
     g_NumLoadedTextures += 1;
+}
+
+
+
+GLuint LoadAttributedTextureImage(const char* filename)
+{
+    printf("Carregando imagem \"%s\"... ", filename);
+
+    stbi_set_flip_vertically_on_load(true);
+    int width;
+    int height;
+    int channels;
+    unsigned char *data = stbi_load(filename, &width, &height, &channels, 3);
+
+    if ( data == NULL )
+    {
+        fprintf(stderr, "ERROR: Cannot open image file \"%s\".\n", filename);
+        std::exit(EXIT_FAILURE);
+    }
+
+    printf("OK (%dx%d).\n", width, height);
+
+    GLuint texture_id;
+    GLuint sampler_id;
+    glGenTextures(1, &texture_id);
+    glGenSamplers(1, &sampler_id);
+
+    glSamplerParameteri(sampler_id, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glSamplerParameteri(sampler_id, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glSamplerParameteri(sampler_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glSamplerParameteri(sampler_id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+    glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
+    glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
+
+    GLuint textureunit = g_NumLoadedTextures;
+    glActiveTexture(GL_TEXTURE0 + textureunit);
+    glBindTexture(GL_TEXTURE_2D, texture_id);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    glBindSampler(textureunit, sampler_id);
+
+    stbi_image_free(data);
+
+    g_NumLoadedTextures += 1;
+
+    return texture_id;
 }

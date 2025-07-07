@@ -1,5 +1,6 @@
 #pragma once
 
+extern GLint g_material_id_uniform;
 
 GLuint CreateGpuProgram(GLuint vertex_shader_id, GLuint fragment_shader_id);
 void LoadShadersFromFiles();
@@ -8,3 +9,5 @@ GLuint LoadShader_Vertex(const char* filename);
 GLuint LoadShader_Fragment(const char* filename);
 
 void LoadTextureImage(const char* filename);
+
+GLuint LoadAttributedTextureImage(const char* filename);

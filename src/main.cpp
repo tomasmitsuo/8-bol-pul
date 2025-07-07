@@ -82,6 +82,13 @@ GLint g_projection_uniform;
 GLint g_object_id_uniform;
 GLint g_bbox_min_uniform;
 GLint g_bbox_max_uniform;
+GLint g_material_id_uniform;
+
+// variaveis de iluminação para o shaders
+GLint interpolation_mode_loc;
+
+
+
 
 // DECLARAÇÃO DAS BOLAS
 GameBalls gameBalls(
