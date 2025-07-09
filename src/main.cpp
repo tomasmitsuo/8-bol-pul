@@ -1,3 +1,7 @@
+// VERSÃO FINAL DO TRABALHO DE FUNDAMENTOS DE COMPUTAÇÃO GRÁFICA - 8-BOL-PUL
+
+// IAN KERSZ AMARAL e TOMÁS MITSUO DIAS UEDA
+
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
