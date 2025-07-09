@@ -1,6 +1,8 @@
 #include "scene.hpp"
 #include "matrices.h"
 
+#include <set>
+
 extern std::map<std::string, SceneObject> g_VirtualScene;
 extern GLint g_bbox_min_uniform;
 extern GLint g_bbox_max_uniform;
@@ -210,6 +212,7 @@ void BuildTrianglesAndAddToVirtualScene(ObjModel* model)
         theobject.bbox_max = bbox_max;
 
         g_VirtualScene[model->shapes[shape].name] = theobject;
+        theobject.material_id = model->shapes[shape].mesh.material_ids.empty() ? -1 : model->shapes[shape].mesh.material_ids[0];
     }
 
     GLuint VBO_model_coefficients_id;
@@ -434,3 +437,68 @@ void PrintObjModelInfo(ObjModel* model)
   }
 }
 
+void BuildTableByMaterial(ObjModel* model)
+{
+    const auto& shape = model->shapes[0];
+    const auto& mesh  = shape.mesh;
+    size_t num_faces  = mesh.num_face_vertices.size();
+
+    std::set<int> uniqueMats(mesh.material_ids.begin(), mesh.material_ids.end());
+
+    for (int mat : uniqueMats) {
+        std::vector<float> verts, norms, uvs;
+        std::vector<GLuint> indices;
+        GLuint idx_count = 0;
+
+        for (size_t f = 0; f < num_faces; ++f) {
+            if (mesh.material_ids[f] != mat) continue;
+            for (size_t v = 0; v < 3; ++v) {
+                auto idx = mesh.indices[3*f + v];
+                verts.push_back(model->attrib.vertices[3*idx.vertex_index + 0]);
+                verts.push_back(model->attrib.vertices[3*idx.vertex_index + 1]);
+                verts.push_back(model->attrib.vertices[3*idx.vertex_index + 2]);
+                verts.push_back(1.0f);
+                if (idx.normal_index >= 0) {
+                    norms.push_back(model->attrib.normals[3*idx.normal_index + 0]);
+                    norms.push_back(model->attrib.normals[3*idx.normal_index + 1]);
+                    norms.push_back(model->attrib.normals[3*idx.normal_index + 2]);
+                    norms.push_back(0.0f);
+                }
+                if (idx.texcoord_index >= 0) {
+                    uvs.push_back(model->attrib.texcoords[2*idx.texcoord_index + 0]);
+                    uvs.push_back(model->attrib.texcoords[2*idx.texcoord_index + 1]);
+                }
+                indices.push_back(idx_count++);
+            }
+        }
+
+        GLuint vao; glGenVertexArrays(1, &vao);
+        glBindVertexArray(vao);
+
+        auto makeBuffer = [&](GLuint loc, const std::vector<float>& data, int dims){
+            GLuint b; glGenBuffers(1, &b);
+            glBindBuffer(GL_ARRAY_BUFFER, b);
+            glBufferData(GL_ARRAY_BUFFER, data.size()*sizeof(float), data.data(), GL_STATIC_DRAW);
+            glVertexAttribPointer(loc, dims, GL_FLOAT, GL_FALSE, 0, nullptr);
+            glEnableVertexAttribArray(loc);
+        };
+
+        makeBuffer(0, verts, 4);
+        if (!norms.empty()) makeBuffer(1, norms, 4);
+        if (!uvs.empty())   makeBuffer(2, uvs, 2);
+        GLuint ib; glGenBuffers(1, &ib);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ib);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size()*sizeof(GLuint), indices.data(), GL_STATIC_DRAW);
+
+        glBindVertexArray(0);
+
+        SceneObject o;
+        o.name                  = "pooltable_mat" + std::to_string(mat);
+        o.vertex_array_object_id= vao;
+        o.first_index           = 0;
+        o.num_indices           = indices.size();
+        o.rendering_mode        = GL_TRIANGLES;
+        o.material_id           = mat;
+        g_VirtualScene[o.name]  = o;
+    }
+}

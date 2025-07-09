@@ -106,7 +106,8 @@ void loadAllObjects(void)
 {   
     ObjModel pooltablemodel("../../data/objs/pooltable.obj");
     ComputeNormals(&pooltablemodel);
-    BuildTrianglesAndAddToVirtualScene(&pooltablemodel);
+    // BuildTrianglesAndAddToVirtualScene(&pooltablemodel);
+    BuildTableByMaterial(&pooltablemodel);
 
     ObjModel cuestickmodel("../../data/objs/cuestick.obj");
     ComputeNormals(&cuestickmodel);
@@ -139,7 +140,12 @@ void drawInitialScene(const std::vector<Ball>& vec_balls, const Cuestick& cuesti
     glm::mat4 model_table = Matrix_Translate(Table::CENTER_X, 0.0f, Table::CENTER_Z);
     glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model_table));
     glUniform1i(g_object_id_uniform, static_cast<int>(ObjectID::TABLE)); // TODO: AQUI´É CARREGADA A TEXTURA DA MESA
-    DrawVirtualObject("the_pooltable");
+    // glUniform1i(g_material_id_uniform, g_VirtualScene["the_pooltable"].material_id);
+    // DrawVirtualObject("the_pooltable");
+    glUniform1i(g_material_id_uniform, 1);
+    DrawVirtualObject("pooltable_mat0");
+    glUniform1i(g_material_id_uniform, 0);
+    DrawVirtualObject("pooltable_mat1");
 
     if (cuestick.shouldBeDrawn())
     {

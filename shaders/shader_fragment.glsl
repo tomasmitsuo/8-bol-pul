@@ -259,7 +259,6 @@ void main()
         }
         else if (material_id == 1)
         {
-
             Kd = texture(TableTexture1, vec2(U, V)).rgb; Ks = vec3(0.1f); Ka = vec3(0.3f); shininess = 16.0f; interpolation_mode = 0;
         }
     }
