@@ -60,6 +60,7 @@ struct SceneObject
     GLuint       vertex_array_object_id; // ID do VAO onde estão armazenados os atributos do modelo
     glm::vec3    bbox_min; // Axis-Aligned Bounding Box do objeto
     glm::vec3    bbox_max;
+    int material_id = -1;
 };
 
 // Definimos uma estrutura que armazenará dados necessários para renderizar
@@ -126,3 +127,4 @@ void PopMatrix(glm::mat4& M);
 void ComputeNormals(ObjModel* model);
 void BuildTrianglesAndAddToVirtualScene(ObjModel* model);
 void PrintObjModelInfo(ObjModel*);
+void BuildTableByMaterial(ObjModel *model);
