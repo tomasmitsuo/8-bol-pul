@@ -1,46 +1,54 @@
+# Trabalho Final INF01047 - Fundamentos de Computação Gráfica
+
 # 8-bol-pul
 
+
 Ian Kersz Amaral - 00338368
+
 Tomás Mitsuo Dias Ueda - 00344595
+
+## DESCRIÇÃO DO JOGO 
+
+simulador de sinuca 3D
 
 ## Contribuições de Cada Integrante
 
-Parágrafo listando as contribuição de cada membro da dupla para o trabalho;
+Os requisitos exigidos no trabalho foram separados entre os integrantes, de maneira que a
+sua implementação foi realizada tanto em sessões síncrona, desenvolvendo em vídeo-chamada,
+quanto assíncrona.
 
-### Ian Kersz Amaral
+Cada membro ficou responsável pelos seguintes tópicos:
 
-!NÃO ESCRITO!
+### Ian Kersz Amaral:
+- Implementação da Free Camera
+- Testes de Intersecção entre objetos
+- Animação
+- Curvas de Bézier
+- Animação
 
-### Tomás Mitsuo Dias Ueda
-
-!NÃO ESCRITO!
+### Tomás Mitsuo Dias Ueda:
+- Organização inicial da estrutura do projeto
+- Instanciação das Malhas Poligonais
+- Criação das classes dos diferentes objetos
+- Modelos de Iluminação
+- Mapeamento de Texturas
+- Implementação da Câmera Look-At
 
 ## Uso de IAs
 
-!NÃO ESCRITO!
+A IA foi utilizada para auxiliar no mapeamento da textura da Mesa e para resolver problemas relacionados a colisão do taco com a bola branca.
 
-Parágrafo curto indicando se a dupla fez uso do ChatGPT (ou alguma outra ferramenta similar, como Claude, Gemini, LLaMa, Github Copilot, OpenAI Codex, etc.) para desenvolvimento do trabalho, descrevendo como a ferramenta foi utilizada e para quais partes do trabalho. O parágrafo deve também incluir uma análise crítica descrevendo quão útil a dupla achou a ferramenta, onde ela auxiliou e onde ela não auxiliou adequadamente;
-
-## Descrição do Processo de Desenvolvimento
-
-!NÃO ESCRITO!
-
-Descrição do processo de desenvolvimento e do uso em sua aplicação dos conceitos de Computação Gráfica estudados e listados nos requisitos acima;
 
 ## Uso dos conceitos da disciplina
-
-!NÃO ESCRITO COMPLETAMENTE!
-
-No mínimo duas imagens mostrando o funcionamento da aplicação;
 
 ### Câmera
 
 Foram implementados 2 tipos de câmera diferentes:
 
 - Câmera Look-At apontado para a bola branca
-    ![Imagem da camera focada na bola branca](imgs/look_at.png)
+    ![Imagem da camera focada na bola branca](data/images/look_At.png)
 - Câmera Livre
-    ![Imagem da camera livre](imgs/freecam.png)
+    ![Imagem da camera livre](data/images/Free_Camera.png)
 
 ### Transformações Geométricas
 
@@ -60,7 +68,12 @@ Mesa:
 
 ### Iluminação
 
-!NÃO ESCRITO!
+Taco e Bolas:
+
+- Para esses dois objetos foram implementados a interpolação de Phong e Iluminação de Blinn-Phong
+
+Mesa:
+- Para a mesa foi implementada a interpolação de Gouraud e a iluminação difusa (Lambert)
 
 ### Colisões
 
@@ -80,7 +93,14 @@ As curvas de bezier cubicas foram implementadas e utilizadas para criar uma anim
 
 ### Texturas
 
-!NÃO ESCRITO!
+O mapeamento de texturas para cada objeto foi implementada de uma maneira distinta.
+
+Bolas:
+- Mapeamento UV esférico
+
+Mesa e Taco:
+- Mapeamento UV direto, usando as coordenadas de textura diretamente
+
 
 ## Manual de Uso
 

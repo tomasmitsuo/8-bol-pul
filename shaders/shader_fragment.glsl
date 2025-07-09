@@ -265,6 +265,8 @@ void main()
 
     else if(object_id == CUESTICK)
     {
+        U = texcoords.x;
+        V = texcoords.y;
         Kd = texture(TextureImage18, vec2(U,V)).rgb; Ks = vec3(0.4f); Ka = vec3(0.15f); shininess = 128.0f; interpolation_mode = 1; 
     }
 
